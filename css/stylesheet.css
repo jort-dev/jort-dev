@@ -1,0 +1,153 @@
+/*todo: POLISH BUTTONS*/
+* {
+    /*border: 1px solid lightgray;*/
+}
+
+:root {
+    --theme-color: #388e3c;
+    --alt-theme-color: #1b5e20;
+    --grey-theme-color: #9e9e9e;
+    --background-color: white;
+}
+
+html {
+    font-family: 'Merriweather', serif;
+}
+
+body, html {
+    margin: 0; /*100vh creates scrollbar otherwise*/
+}
+
+
+
+
+/*CENTERING//////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*dont apply these to body*/
+/*the container in which the child containers should be centered */
+.center-parent {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    padding: 0px 10px 0px 10px; /*prevent text to touch border on smaller screens*/
+}
+
+/*same but for horizontal center only*/
+.center-horizontal-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 10px 0px 10px;
+    /*justify-content: thenter;*/
+}
+/*items in this container will be put horizontal, aligning left*/
+.columns{
+    display: flex;
+    flex-direction: column;
+}
+
+/*the childs to be centered (not needed)*/
+.center-child {
+    /*border: 1px solid black;*/
+}
+
+
+/*ELEMENT COLORS//////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*text which displays a warning*/
+.text-warning {
+    color: orange;
+}
+
+.text-ok{
+    color: var(--theme-color);
+}
+
+.text-grey{
+    color: grey;
+}
+
+/*all links on the site*/
+.link {
+    color: var(--theme-color);
+    text-decoration: none;
+}
+
+/*a clicked link (not implemented*/
+.clicked-link {
+    color: var(--theme-color);
+    text-decoration: underline;
+}
+
+/*when a link is hovered*/
+.link:hover {
+    text-decoration: underline;
+}
+
+/*button with a link*/
+.link-button {
+    border: 2px solid var(--theme-color);
+    background-color: var(--theme-color);
+    color: white;
+    text-decoration: none;
+    padding: 7px 10px;
+    text-align: center;
+    display: inline-block;
+    margin-right: 5px
+}
+
+/*button with a link with inverse colors (apply link-button first)*/
+.link-button-inverse {
+    color: var(--theme-color);
+    background-color: white;
+}
+
+img{
+    vertical-align: text-bottom;
+}
+
+/*input fields like buttons and forms*/
+.input{
+    border: 2px solid black;
+    background-color: white;
+}
+
+/*focused input field*/
+.input:focus{
+    border: 2px solid var(--theme-color);
+    background-color: white;
+    outline: none !important; /*i dont know why but this is needed*/
+}
+
+
+
+/*HOME PAGE//////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*ul indented square list bullets for link list*/
+.fancy-ul {
+    list-style-type: square;
+    /*padding-left: 10px;*/
+    /*inside for it to be inside div...*/
+    /*list-style-position: inside;*/
+    list-style-position: outside;
+}
+
+
+/*PROFILE BOX/////////////////////////////////////////////////////////////////////////////////////////////////////*/
+.profile {
+    top: 0;
+    right: 0;
+    position: fixed;
+    text-align: right;
+    background-color: var(--background-color);
+    padding-right: 10px;
+    /*border-bottom-left-radius: 10px;*/
+    border-bottom: 1px solid grey;
+}
+
+/*help i do not how to remove the scrollbar without javascript*/
+.profile-hidden-dynamic-magic-number-ffs {
+    top: 0;
+    right: 0;
+    visibility: hidden;
+    text-align: right;
+    border-bottom: 1px solid grey;
+}
+ 
