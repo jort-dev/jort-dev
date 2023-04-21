@@ -1,11 +1,11 @@
 # Website
 This repository contains the code for my website, [jort.dev](https://jort.dev).  
-I have copied the design of [jschr.io](https://jschr.io/)
+I have copied the design of [jschr.io](https://jschr.io/).
 
 ## Setup
 The setup instructions assume a fresh [Arch Linux](https://wiki.archlinux.org/) installation.
 
-### Setup Nginx
+### Setup Nginx with site
 
 Download [nginx](https://wiki.archlinux.org/title/Nginx):
 ```shell
