@@ -1,6 +1,6 @@
 # Website
 This repository contains the code for my website, [jort.dev](https://jort.dev).  
-I have copied the design of [jschr.io](https://jschr.io/).
+I was inspired by the design of [jschr.io](https://jschr.io/).
 
 ## Setup
 The setup instructions assume a fresh [Arch Linux](https://wiki.archlinux.org/) installation.
@@ -63,6 +63,45 @@ Restart the Nginx service:
 ```shell
 sudo systemctl restart nginx
 ```
+
+
+## Server setup
+This section describes various parts of how to set up the server the site is hosted on.
+
+### Auto-mount disks
+* Identify the disks with `lsblk`.  
+* With `ntfs-3g` installed, [label](https://wiki.archlinux.org/title/Persistent_block_device_naming#by-label) the disks.  
+* Edit the `/etc/fstab` file as seen [here](https://wiki.archlinux.org/title/Fstab#Usage). Use `auto` as type.  
+* Test the fstab configuration by running `sudo mount -a`. The disks should now be mounted at the defined paths.  
+
+### Secure server
+The server is constantly under attack, see:
+```shell
+journalctl -u sshd | grep Failed
+```
+To protect against attacks, we are going to use `fail2ban`.  
+Below explaination is also found on the [wiki](https://wiki.archlinux.org/title/Fail2ban).  
+
+To automatically ban IP addresses with suspicious behaviour:
+```shell
+sudo pacman -S fail2ban
+sudo mkdir /etc/fail2ban
+sudo vim /etc/fail2ban/jail.local
+```
+Enter the following configuration in the jail.local file:
+```conf
+[DEFAULT]
+bantime = 1d
+
+[sshd]
+enabled = true
+```
+Start the banning service:
+```shell
+sudo systemctl enable --now fail2ban
+```
+
+The better solution against attacks is to only allow public and private key connections instead of passwords.
 
 
 
