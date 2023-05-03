@@ -1,8 +1,3 @@
-/*todo: POLISH BUTTONS*/
-* {
-    /*border: 1px solid lightgray;*/
-}
-
 :root {
     --theme-color: #388e3c;
     --alt-theme-color: #1b5e20;
@@ -17,8 +12,6 @@ html {
 body, html {
     margin: 0; /*100vh creates scrollbar otherwise*/
 }
-
-
 
 
 /*CENTERING//////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -37,10 +30,10 @@ body, html {
     flex-direction: column;
     align-items: center;
     padding: 0px 10px 0px 10px;
-    /*justify-content: thenter;*/
 }
+
 /*items in this container will be put horizontal, aligning left*/
-.columns{
+.columns {
     display: flex;
     flex-direction: column;
 }
@@ -57,11 +50,11 @@ body, html {
     color: orange;
 }
 
-.text-ok{
+.text-ok {
     color: var(--theme-color);
 }
 
-.text-grey{
+.text-grey {
     color: grey;
 }
 
@@ -69,12 +62,6 @@ body, html {
 .link {
     color: var(--theme-color);
     text-decoration: none;
-}
-
-/*a clicked link (not implemented*/
-.clicked-link {
-    color: var(--theme-color);
-    text-decoration: underline;
 }
 
 /*when a link is hovered*/
@@ -99,55 +86,3 @@ body, html {
     color: var(--theme-color);
     background-color: white;
 }
-
-img{
-    vertical-align: text-bottom;
-}
-
-/*input fields like buttons and forms*/
-.input{
-    border: 2px solid black;
-    background-color: white;
-}
-
-/*focused input field*/
-.input:focus{
-    border: 2px solid var(--theme-color);
-    background-color: white;
-    outline: none !important; /*i dont know why but this is needed*/
-}
-
-
-
-/*HOME PAGE//////////////////////////////////////////////////////////////////////////////////////////////////////*/
-/*ul indented square list bullets for link list*/
-.fancy-ul {
-    list-style-type: square;
-    /*padding-left: 10px;*/
-    /*inside for it to be inside div...*/
-    /*list-style-position: inside;*/
-    list-style-position: outside;
-}
-
-
-/*PROFILE BOX/////////////////////////////////////////////////////////////////////////////////////////////////////*/
-.profile {
-    top: 0;
-    right: 0;
-    position: fixed;
-    text-align: right;
-    background-color: var(--background-color);
-    padding-right: 10px;
-    /*border-bottom-left-radius: 10px;*/
-    border-bottom: 1px solid grey;
-}
-
-/*help i do not how to remove the scrollbar without javascript*/
-.profile-hidden-dynamic-magic-number-ffs {
-    top: 0;
-    right: 0;
-    visibility: hidden;
-    text-align: right;
-    border-bottom: 1px solid grey;
-}
- 
