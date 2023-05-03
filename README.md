@@ -74,6 +74,16 @@ This section describes various parts of how to set up the server the site is hos
 * Edit the `/etc/fstab` file as seen [here](https://wiki.archlinux.org/title/Fstab#Usage). Use `auto` as type.  
 * Test the fstab configuration by running `sudo mount -a`. The disks should now be mounted at the defined paths.  
 
+### Setup plex
+Follow the instructions on the [Arch Wiki](https://wiki.archlinux.org/title/Plex) and [here](https://gist.github.com/pjobson/3811b73740a3a09597511c18be845a6c).  
+As mount point, I created the directory `/mount`, in which I created a folder `old_hdd`, to which I mounted the HDD.
+On the HDD is a folder for plex: `plex`
+I followed the permission instructions for the plex folder and all its parent folders: 
+ * `/media`
+ * `/media/old_hdd`
+ * `/media/old_hdd/plex`
+
+
 ### Secure server
 The server is constantly under attack, see:
 ```shell
