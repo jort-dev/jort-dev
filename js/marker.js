@@ -64,12 +64,16 @@ let secondaryMarks = [];
 function offerMarksDownload(){
     let endTime = new Date();
     let elapsedMs = endTime - startTime;
+    marks.push(elapsedMs); //end time needed so generation script knows how long the song is
+
+    // add normal marks
     let text = "type1:\n";
     marks.forEach(item => {
         text += " - " + item + "\n";
     });
-    text += "type2:\n"
 
+    // add secondary marks
+    text += "type2:\n"
     secondaryMarks.forEach(item => {
         text += " - " + item + "\n";
     });
@@ -100,8 +104,6 @@ function startMarking() {
 
 function stopMarking() {
     let endTime = new Date();
-    let elapsedMs = endTime - startTime;
-    logToUser(`Elapsed: ${elapsedMs}ms`);
     let audioPlayer = document.getElementById("audio-player");
     audioPlayer.pause();
     isMarking = false;
