@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Beat Sync Marker</title>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="center-parent">
+    <div id="content">
+        <h1>Beat Sync Marker</h1>
+        <p class="subtitle">Used to create marks for my <a class="link" href="https://gitlab.com/SJort/compilation_maker" target="_blank">compilation maker</a></p>
+        <p class="text-warning" id="message"></p>
+        <div class="upload-btn-wrapper">
+            <button class="link-button link-button-inverse" id="upload-btn">Upload audio</button>
+            <input id="audio-upload" type="file" name="myfile"/>
+        </div>
+        <br>
+        <!--sample song, I got it from Mr. Cardigan himself-->
+        <div id="audio-player-wrapper">
+            <audio id="audio-player" src="/static/lovefool.mp3" controls></audio>
+        </div>
+        <br>
+        Press <code>Spacebar</code> to start/finish marking songs.
+        <br>
+        <br>
+        Press any of the following keys on the rhythm of beat:
+        <br>
+        <code>q,w,e,r,t,a,s,d,f,g,z,x,v,b</code>
+        <br>
+        <br>
+        <pre id="progression-info"></pre>
+        <pre id="markers"> </pre>
+
+        <h3>Place a secondary marker</h3>
+        Placing secondary markers is usually not needed.
+        <br>
+        Press any of the following keys to place a secondary marker:
+        <br>
+        <code>y,u,i,o,p,h,j,k,l,n,m</code>
+
+    </div>
+</div>
+<script src="/js/marker.js"></script>
+
+</body>
+</html>

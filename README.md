@@ -114,6 +114,10 @@ sudo systemctl enable --now fail2ban
 The better solution against attacks is to only allow public and private key connections instead of passwords.
 
 
+## Ideas
+* project overview like https://flathub.org/
+
+
 
 
 

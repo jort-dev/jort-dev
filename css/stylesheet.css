@@ -47,7 +47,7 @@ body, html {
 /*ELEMENT COLORS//////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*text which displays a warning*/
 .text-warning {
-    color: orange;
+    color: red;
 }
 
 .text-ok {
@@ -56,6 +56,14 @@ body, html {
 
 .text-grey {
     color: grey;
+}
+
+/*subtitle under h1 header*/
+.subtitle{
+    font-size: 12px;
+    margin-top: -20px;
+    font-style: italic;
+
 }
 
 /*all links on the site*/
@@ -73,8 +81,9 @@ body, html {
 .link-button {
     border: 2px solid var(--theme-color);
     background-color: var(--theme-color);
-    color: white;
+    color: var(--background-color);
     text-decoration: none;
+    font-weight: bold;
     padding: 7px 10px;
     text-align: center;
     display: inline-block;
@@ -84,5 +93,42 @@ body, html {
 /*button with a link with inverse colors (apply link-button first)*/
 .link-button-inverse {
     color: var(--theme-color);
-    background-color: white;
+    background-color: var(--background-color);
+}
+
+
+/*music upload button*/
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.upload-btn {
+    border: 2px solid var(--theme-color);
+    color: var(--theme-color);
+    background-color: var(--background-color);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.tap-button{
+    border: 2px solid var(--theme-color);
+    color: var(--theme-color);
+    background-color: var(--background-color);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 15px;
+    text-align: center;
+    display: inline-block;
 }
