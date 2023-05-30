@@ -55,10 +55,11 @@
             <div class="flex-table-row flex-table-first-row">
                 <div class="flex-table-cell">Hotkey</div>
                 <div class="flex-table-cell">Folder</div>
-                <button class="link-button link-button-red" onclick="clearKeybindings()">Clear</button>
+                <button class="link-button link-button-red" id="clear-keybindings-button"
+                ">Clear</button>
             </div>
         </div>
-        <button class="link-button" onclick="addNewKeybinding()">Add</button>
+        <button class="link-button" id="add-keybinding-button">Add</button>
 
 
         <br>
@@ -414,6 +415,11 @@
     }
 
     function onLoad() {
+        let addKeybindingButton = document.getElementById("add-keybinding-button")
+        addKeybindingButton.addEventListener("click", () => addNewKeybinding())
+        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
+        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
+
         Storage.prototype.setObject = function (key, value) {
             this.setItem(key, JSON.stringify(value));
         }
@@ -456,6 +462,7 @@
                 console.log(`Key pressed: ${event.key}`)
             }
         })
+
     }
 
     onLoad();
