@@ -110,7 +110,8 @@
         <br>
         <!--sample song, I got it from Mr. Cardigan himself-->
         <div id="audio-player-wrapper">
-            <audio id="audio-player" src="/static/lovefool.mp3" controls></audio>
+            <audio id="audio-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+                   controls></audio>
         </div>
         <br>
         Press <code>Spacebar</code> to start/finish marking songs.
@@ -159,14 +160,14 @@
     }
 
     let filename = "lovefool.mp3";
-    let finalFilename = "lovefool_marked.yaml";
+    let finalFilename = "lovefool_timestamps.yaml";
 
     function onUpload({target}) {
         // Make sure we have files to use
         if (!target.files.length) return;
 
-        filename = target.files.item(0).name;
-        finalFilename = filename.replace(/\.[^/.]+$/, "") + ".yaml";
+        filename = target.files.item(0).name; //audio.mp3
+        finalFilename = filename.replace(/\.[^/.]+$/, "") + "_timestamps.yaml"; //the regex removes the extension
 
         console.log(`Uploaded '${filename}' to become ${finalFilename}`);
 
@@ -256,7 +257,8 @@
         let elapsedMs = currentTime - startTime;
         if (secondary) {
             secondaryMarks.push(elapsedMs);
-        } else {
+        }
+        else {
             marks.push(elapsedMs);
         }
         let markersHolder = document.getElementById("markers");
@@ -279,11 +281,12 @@
 
     let leftKeys = ["q", "w", "e", "r", "t", "a", "s", "d", "f", "g", "z", "x", "c", "v", "b"];
     let rightKeys = ["y", "u", "i", "o", "p", "h", "j", "k", "l", "n", "m"];
-    document.addEventListener("keypress", event => {
+    document.addEventListener("keydown", event => {
         if (event.key === " ") {
             if (isMarking) {
                 stopMarking();
-            } else {
+            }
+            else {
                 startMarking();
             }
             event.stopPropagation();
@@ -291,7 +294,8 @@
         }
         if (leftKeys.includes(event.key)) {
             mark();
-        } else if (rightKeys.includes(event.key)) {
+        }
+        else if (rightKeys.includes(event.key)) {
             mark(true);
         }
 

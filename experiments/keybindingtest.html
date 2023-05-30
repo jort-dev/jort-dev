@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <title>Experiments</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+    <style>
+    </style>
+
+</head>
+<body>
+
+<div class="center-parent">
+    <div class="center-child">
+        <h1>Keybindings</h1>
+        <div class="flex-table" id="keybindings-table">
+            <div class="flex-table-row flex-table-first-row">
+                <div class="flex-table-cell">Hotkey</div>
+                <div class="flex-table-cell">Folder</div>
+                <button class="link-button link-button-red" onclick="clearKeybindings()">Clear</button>
+            </div>
+        </div>
+        <button class="link-button" onclick="addNewKeybinding()">Add</button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    function addNewKeybinding() {
+        let keybinding = {
+            id: uid(),
+            key: "🔑",
+            folder: "other",
+            // key: uid(),
+            // folder: uid(),
+        }
+        let keybindings = getKeybindings()
+        if (!keybindings) {
+            keybindings = []
+        }
+        keybindings.push(keybinding)
+        setKeybindings(keybindings)
+        addToKeybindingsTable(keybinding)
+        return keybinding;
+    }
+
+    function updateKeybinding(keybinding) {
+        let keybindings = getKeybindings()
+        if (!keybindings) {
+            console.error("No keybindings.")
+            return;
+        }
+
+        let indexToUpdate = keybindings.findIndex((element) => element.id === keybinding.id);
+        if (indexToUpdate === -1) {
+            console.error(`Index for ${keybinding} not found.`)
+            return;
+        }
+        keybindings[indexToUpdate] = keybinding;
+        setKeybindings(keybindings);
+    }
+
+    function deleteKeybinding(id) {
+        let keybindings = getKeybindings()
+        let indexToDelete = keybindings.findIndex((element) => element.id === id);
+        if (indexToDelete === -1) {
+            console.error(`Index for ${id} not found.`)
+            return;
+        }
+        keybindings.splice(indexToDelete, 1);
+        setKeybindings(keybindings)
+    }
+
+    function clearKeybindings() {
+        if (!confirm("Clear all keybindings?")) {
+            return;
+        }
+        let keybindingRows = document.getElementsByClassName("flex-table-row")
+        keybindingRows = Array.from(keybindingRows);
+        keybindingRows.shift(); // pop the first element, the header
+        keybindingRows.forEach(keybindingRow => keybindingRow.remove())
+        setKeybindings(null)
+    }
+
+
+    function addToKeybindingsTable(keybinding) {
+        const keybindingsContainer = document.getElementById('keybindings-table');
+
+        const keybindingRow = document.createElement('div');
+        keybindingRow.classList.add('flex-table-row');
+
+        const hotkeyInput = document.createElement('button');
+        hotkeyInput.classList.add('neutral-button');
+        hotkeyInput.title = "Change key"
+        hotkeyInput.classList.add('flex-table-cell');
+        hotkeyInput.textContent = keybinding.key;
+        hotkeyInput.addEventListener("click", () => {
+            console.log(`Waiting for user to press key to bind to folder '${keybinding.folder}'...`)
+            hotkeyInput.textContent = "👂"
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") {
+                    console.log("Bind cancelled.")
+                    return;
+                }
+                hotkeyInput.textContent = event.key
+                keybinding.key = event.key
+                updateKeybinding(keybinding);
+                console.log(`Set '${event.key}' as key for folder '${keybinding.folder}'`)
+            }, {once: true})
+        })
+
+
+        const folderInput = document.createElement('input');
+        folderInput.classList.add('flex-table-cell');
+        folderInput.value = keybinding.folder;
+        folderInput.addEventListener('input', function () {
+            keybinding.folder = folderInput.value;
+            updateKeybinding(keybinding)
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('neutral-button');
+        deleteButton.classList.add('flex-table-cell');
+        deleteButton.textContent = '❌';
+        deleteButton.title = "Delete"
+        deleteButton.addEventListener('click', () => {
+            deleteKeybinding(keybinding.id);
+            keybindingRow.remove();
+        });
+
+        keybindingRow.appendChild(hotkeyInput);
+        keybindingRow.appendChild(folderInput);
+        keybindingRow.appendChild(deleteButton);
+
+        keybindingsContainer.appendChild(keybindingRow);
+    }
+
+    function randomString(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
+        }
+        return result;
+    }
+
+    const uid = function () {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+
+
+    Storage.prototype.setObject = function (key, value) {
+        this.setItem(key, JSON.stringify(value));
+    }
+    Storage.prototype.getObject = function (key) {
+        let value = this.getItem(key);
+        return value && JSON.parse(value);
+    }
+
+    function getKeybindings() {
+        return localStorage.getObject("keybindings");
+    }
+
+    function setKeybindings(keybindings) {
+        return localStorage.setObject("keybindings", keybindings);
+    }
+
+    function onLoad() {
+        let keybindings = getKeybindings()
+        if (!keybindings) {
+            return;
+        }
+        keybindings.forEach(keybinding => {
+            addToKeybindingsTable(keybinding)
+        })
+    }
+
+    onLoad();
+</script>
+</body>
+</html>
+

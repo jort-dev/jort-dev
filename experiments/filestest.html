@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <title>Experiments</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+    <style>
+    </style>
+
+</head>
+<body>
+
+<div class="center-parent">
+    <div class="center-child">
+        <h1>Files</h1>
+        <input type="file" id="folder-input" webkitdirectory directory multiple>
+        <ul id="file-list"></ul>
+    </div>
+
+</div>
+
+
+<script>
+
+    // Function to handle file selection
+    function handleFileSelect(event) {
+        const fileList = event.target.files;
+
+        // Clear existing file list
+        const fileListElement = document.getElementById('file-list');
+        fileListElement.innerHTML = '';
+
+        // Loop through selected files
+        for (let i = 0; i < fileList.length; i++) {
+            const file = fileList[i];
+            const listItem = document.createElement('li');
+            listItem.textContent = file.name;
+            fileListElement.appendChild(listItem);
+        }
+    }
+
+    // Event listener for file selection
+    const folderInput = document.getElementById('folder-input');
+    folderInput.addEventListener('change', handleFileSelect);
+</script>
+</body>
+</html>
+
