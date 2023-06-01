@@ -4,6 +4,7 @@
     --alt-theme-color: #1b5e20;
     --grey-theme-color: #9e9e9e;
     --background-color: white;
+    --shake-distance: 0.5em;
 }
 
 html {
@@ -153,6 +154,8 @@ body, html {
     display: inline-block;
 }
 
+/*flex table*/
+
 .flex-table {
     display: flex;
     flex-direction: column;
@@ -175,5 +178,49 @@ body, html {
     flex: 1;
     margin-right: 10px;
     padding: 5px;
+}
+
+/*keybindings*/
+.footer-keybindings {
+    display: flex;
+}
+
+.footer-keybinding {
+    display: flex;
+    margin: 10px;
+    border: 2px solid black;
+}
+
+.footer-keybinding-key {
+    margin: 5px;
+    border: 2px solid black;
+    padding: 4px;
+}
+
+.footer-keybinding-folder {
+    margin: 5px;
+    border: 2px solid black;
+    padding: 4px;
+}
+
+.selected-footer-keybinding {
+    background-color: var(--theme-color);
+}
+.selected-footer-keybinding-item{
+    background-color: greenyellow;
+}
+
+/*shake animation*/
+.shake {
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0% { transform: translateY(0); }
+    20% { transform: translateY(calc(var(--shake-distance) * -1)); }
+    40% { transform: translateY(var(--shake-distance)); }
+    60% { transform: translateY(calc(var(--shake-distance) * -1)); }
+    80% { transform: translateY(var(--shake-distance)); }
+    100% { transform: translateY(0); }
 }
 

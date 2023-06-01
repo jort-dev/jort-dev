@@ -1,3 +1,4 @@
+<!--todo: could update prototype for all properties, open keybindings after upload-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,8 +56,7 @@
             <div class="flex-table-row flex-table-first-row">
                 <div class="flex-table-cell">Hotkey</div>
                 <div class="flex-table-cell">Folder</div>
-                <button class="link-button link-button-red" id="clear-keybindings-button"
-                ">Clear</button>
+                <button class="link-button link-button-red" id="clear-keybindings-button">Clear</button>
             </div>
         </div>
         <button class="link-button" id="add-keybinding-button">Add</button>
@@ -69,8 +69,12 @@
         <br>
         <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
     </div>
-    <div class="footer">
-        <div id="filename"></div>
+    <div class="footer" id="sort-footer" style="visibility: hidden">
+        <!--        todo: add keybinding element for mapped items with deleted keybinds-->
+        <!--        add 'will be moved to' text-->
+        <div id="filename-display">Filename</div>
+        <div id="mapped-folder-display"></div>
+        <div class="footer-keybindings" id="footer-keybindings"></div>
     </div>
 
 
@@ -81,35 +85,47 @@
     import PhotoSwipeLightbox from '/photoswipe/dist/photoswipe-lightbox.esm.js';
     import PhotoSwipeVideoPlugin from '/photoswipe/dist/photoswipe-video-plugin.esm.js';
 
-    let pswp = null;
-    let lastTimeoutId = null;
+    let pswp = null; // photoswipe instance, it is non-null if open
+    let lastTimeoutId = null; // used to log to user with a timeout
+    let loadedCount = 0; // keep track of how many uploaded items are loaded for gallery
 
-    function logToUser(msg, autoclear = true) {
+    function logToUser(msg, timeout = 3000) {
         clearTimeout(lastTimeoutId);
-        console.log(msg);
         let msgBar = document.getElementById("log-bar");
         msgBar.innerText = msg;
-        if (autoclear) {
+        console.log(msgBar.innerText)
+        if (timeout > 0) {
             lastTimeoutId = setTimeout(function () {
                 msgBar.innerText = " ";
-            }, 3000);
+            }, timeout);
         }
     }
 
-    function fileToItem(file) {
+    function shakeElement(element) {
+        element.classList.add("shake");
+
+        setTimeout(function () {
+            element.classList.remove("shake");
+        }, 400);
+    }
+
+    function fileObjectToGalleryInputItem(file) {
         let item = {}
-        const itemHtml = `<div class="custom-html-slide">${file.name}</div>`;
+        const itemHtml = `<div class="custom-html-slide">${file.name}</div>`; // fallback if file can't be displayed
         const fileType = file['type'];
+        // load image
         if (fileType.includes("image")) {
             const urlObj = URL.createObjectURL(file);
             item.src = urlObj;
             let img = new Image();
             img.onload = function () {
+                ++loadedCount
                 item.width = img.width;
                 item.height = img.height;
             };
             img.src = urlObj; //this loads the image, triggering the above event
         }
+        // load video (takes long)
         else if (fileType.includes("video")) {
             const urlObj = URL.createObjectURL(file);
             let video = document.createElement("video");
@@ -117,8 +133,10 @@
                 if (video.videoWidth === 0 || video.videoHeight === 0) {
                     // if 0x0: browser does not support the video type, just show filename
                     item.html = itemHtml;
+                    ++loadedCount
                 }
                 else {
+                    ++loadedCount
                     item.width = video.videoWidth;
                     item.height = video.videoHeight;
                     item.videoSrc = urlObj;
@@ -129,33 +147,20 @@
             });
             video.src = urlObj; // this loads the video, triggering the above event
         }
+        // fallback for remanining file types
         else {
             item.html = itemHtml;
+            ++loadedCount
         }
         item.alt = file.name;
         return item;
     }
 
-    function getLoadedItemsCount(items) {
-        let loadedCount = 0;
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            if (Object.hasOwn(item, `src`)) {
-                loadedCount++;
-            }
-            else if (Object.hasOwn(item, `html`)) {
-                loadedCount++
-            }
-        }
-        return loadedCount;
-    }
-
-    function pollUntilConditionTrue(condition, interval, timeout) {
+    function pollUntilTrue(condition, interval, timeout) {
         return new Promise((resolve, reject) => {
             const startTime = Date.now();
             const intervalId = setInterval(() => {
                 const elapsedTime = Date.now() - startTime;
-
                 if (condition()) {
                     clearInterval(intervalId);
                     resolve();
@@ -191,153 +196,244 @@
         return items;
     }
 
-    function setupOptions(fileArray) {
+    function loadGalleryArguments(fileObjects) {
+        // gallery needs dimensions of images etc, so we need to load them
+        loadedCount = 0;
         let items = []
-        fileArray.forEach(file => {
-            let item = fileToItem(file);
+        fileObjects.forEach(fileObject => {
+            let item = fileObjectToGalleryInputItem(fileObject);
             items.push(item);
         });
+        return {
+            dataSource: items,
+            pswpModule: () => import('/photoswipe/dist/photoswipe.esm.js'),
+            getViewportSizeFn: function (options, pswp) {
+                // also see the paddingfn attribute, aso for each img possible
+                return {
+                    x: document.documentElement.clientWidth,
+                    y: window.innerHeight * 0.9 //subtract the footer, which is 0.1vh
+                };
+            },
 
-        let options = {dataSource: items};
-        options.showHideAnimationType = 'none';
-        options.pswpModule = () => import('/photoswipe/dist/photoswipe.esm.js');
-        // also see the paddingfn attribute, aso for each img possible
-        options.getViewportSizeFn = function (options, pswp) {
-            return {
-                x: document.documentElement.clientWidth,
-                y: window.innerHeight * 0.9
-            };
+            showHideAnimationType: 'none',
+            wheelToZoom: true, // enable mouse scroll zoom
+            bgClickAction: "none", //don't close the gallery if clicked behind image
+
+            //default copies: options set to the default value
+            bgOpacity: 0.8,
+            errorMsg: 'The item cannot be loaded',
+            pinchToClose: true,
+            closeOnVerticalDrag: true,
+            padding: {top: 0, bottom: 0, left: 0, right: 0},
+            indexIndicatorSep: ' / ',
         }
-        options.wheelToZoom = true; // enable mouse scroll zoom
-        options.bgClickAction = "none" //dont close the gallery if clicked behind image
-
-        // default copies: options set to the default value
-        options.bgOpacity = 0.8;
-        options.errorMsg = 'The item cannot be loaded';
-        options.pinchToClose = true;
-        options.closeOnVerticalDrag = true;
-        options.padding = {top: 0, bottom: 0, left: 0, right: 0}
-        options.indexIndicatorSep = ' / '
-        return options;
     }
 
-    function sortFiles(files) {
+    function naturalSortFileObjects(files) {
         return files.sort((fileA, fileB) => fileA.name.localeCompare(fileB.name, navigator.languages[0] || navigator.language, {
             numeric: true,
             ignorePunctuation: true
         }))
     }
 
-    function onUpload({target}) {
+    function createKeybindingElement(hotkey, folder) {
+        let keybindingDiv = document.createElement("div")
+        keybindingDiv.classList.add("footer-keybinding")
+
+        let keybindingKey = document.createElement("div")
+        keybindingKey.classList.add("footer-keybinding-key")
+        keybindingKey.textContent = hotkey;
+
+        let keybindingFolder = document.createElement("div")
+        keybindingFolder.classList.add("footer-keybinding-folder")
+        keybindingFolder.textContent = folder
+
+        keybindingDiv.appendChild(keybindingKey)
+        keybindingDiv.appendChild(keybindingFolder)
+        return keybindingDiv;
+    }
+
+    function loadAndShowSortingFooter() {
+        let keybindings = localStorage.getKeybindings()
+        let footer = document.getElementById("footer-keybindings")
+        keybindings.forEach(keybinding => {
+            let keybindingDiv = createKeybindingElement(keybinding.key, keybinding.folder)
+            footer.appendChild(keybindingDiv)
+        })
+        document.getElementById("sort-footer").style.visibility = "visible"
+    }
+
+
+    function highlightKeybindingWithFolder(folder) {
+        let keybindings = localStorage.getKeybindings()
+        let keybindingIndex = keybindings.findIndex(keybinding => keybinding.folder === folder);
+        //if not found, index will be -1, so nothing will be highlighted
+        let footerKeybindingsElement = document.getElementById("footer-keybindings")
+        for (let i = 0; i < footerKeybindingsElement.childElementCount; i++) {
+            let keybindingElement = footerKeybindingsElement.children[i]
+            if (i === keybindingIndex) {
+                keybindingElement.style.backgroundColor = "green"
+            }
+            else {
+                keybindingElement.style.backgroundColor = "red"
+            }
+        }
+
+    }
+
+    function getIndexByFilename() {
+        let filename = localStorage.getFilename()
+        if (!filename) {
+            return 0;
+        }
+        let uploads = localStorage.getUploads()
+        if (uploads.length === 0) {
+            return 0;
+        }
+
+        let index = uploads.findIndex(upload => upload === filename);
+        if (index === -1) {
+            console.log(`${filename} was not re-uploaded, using saved index instead as fallback.`)
+            return localStorage.getIndex()
+        }
+        return index;
+    }
+
+    function galleryOpenedListener(lightbox) {
+        console.log(`Gallery opened`);
+        //pswp instance not available after lightbox.init()
+        pswp = lightbox.pswp // fill the gallery instance variable for other functions to use and know gallery is open
+        loadAndShowSortingFooter();
+    }
+
+    function galleryClosedListener() {
+        console.log('Gallery closed');
+        pswp = null; // clear the variable so other functions know the gallery is closed
+        let footerKeybindingDiv = document.getElementById("footer-keybindings")
+        footerKeybindingDiv.innerHTML = ""
+        document.getElementById("sort-footer").style.visibility = "hidden"
+    }
+
+    function getMappedFolder(filename) {
+        let mappings = localStorage.getMappings()
+        if (Object.hasOwn(mappings, filename)) {
+            let folder = mappings[filename]
+            return folder
+        }
+        else {
+            return null
+        }
+    }
+
+    function gallerySlideChangedListener() {
+        // called after the gallery has loaded the next slide
+        let uploads = localStorage.getUploads()
+        let filename = uploads[pswp.currIndex]
+        localStorage.setFilename(filename)
+        localStorage.setIndex(pswp.currIndex) // save as fallback
+        document.getElementById("filename-display").innerText = filename
+        let mappedFolder = getMappedFolder(filename)
+        //if not found, folder will be undefined, which should not match anything
+        highlightKeybindingWithFolder(mappedFolder)
+    }
+
+    function initGallery(options) {
+        const lightbox = new PhotoSwipeLightbox(options);
+        const videoPlugin = new PhotoSwipeVideoPlugin(lightbox, {});
+        lightbox.on('change', () => {
+            gallerySlideChangedListener()
+        });
+        lightbox.on('firstUpdate', () => {
+            galleryOpenedListener(lightbox)
+        });
+        lightbox.on('close', () => {
+            galleryClosedListener()
+        });
+        lightbox.init();
+        let openGalleryButton = document.getElementById("open-gallery-button");
+        openGalleryButton.onclick = () => {
+            let indexToLoad = getIndexByFilename()
+            lightbox.loadAndOpen(indexToLoad);
+        };
+        openGalleryButton.style.visibility = "visible";
+
+    }
+
+    function uploadListener({target}) {
         console.log(target.files)
         if (!target.files.length) {
             logToUser("No files selected.")
             return;
         }
+        let uploadedFileObjects = Array.from(target.files);
+        naturalSortFileObjects(uploadedFileObjects) //does not change anything if files are uploaded with the file manager set to sort by name
+        let uploadedFilenames = uploadedFileObjects.map(fileObject => fileObject.name)
+        localStorage.setUploads(uploadedFilenames)
         logToUser(`Loading ${target.files.length} items...`);
-        console.log(`Input filenames: ${Array.from(target.files).map(file => file.name)}`)
-        let fileArray = Array.from(target.files);
-        sortFiles(fileArray) //does not change anything if files are uploaded with the file manager set to sort by name
-        console.log(`Sorted ${fileArray.map(file => file.name)}`)
-        let options = setupOptions(fileArray);
-        let items = options.dataSource
+        let options = loadGalleryArguments(uploadedFileObjects);
+
+        //wait for gallery arguments to have all the dimensions before showing open button
+        //could also show earlier, but not tested and user will experience stutters in gallery
         const condition = () => {
-            let loadedItemsCount = getLoadedItemsCount(items);
-            logToUser(`Loaded ${loadedItemsCount} / ${items.length}`, false);
-            return loadedItemsCount >= items.length;
+            //loadedCount is incremented in the listeners created in the loader function
+            // not sure if concurrency might be a problem in the future
+            logToUser(`Loaded ${loadedCount} / ${uploadedFileObjects.length}`, -1);
+            return loadedCount >= uploadedFileObjects.length;
         }
-        pollUntilConditionTrue(condition, 500, 100000)
+        pollUntilTrue(condition, 200, 60000)
             .then((result) => {
-                const lightbox = new PhotoSwipeLightbox(options);
-                const videoPlugin = new PhotoSwipeVideoPlugin(lightbox, {});
-                lightbox.on('firstUpdate', () => {
-                    console.log(`Gallery opened`);
-                });
-                lightbox.on('change', () => {
-                    pswp = lightbox.pswp;
-                    localStorage.setItem("index", pswp.currIndex);
-                    console.log(`Updated index to ${pswp.currIndex}`);
-                    let file = items[pswp.currIndex]
-                    let display = document.getElementById("filename")
-                    if (display) {
-                        display.innerText = file.alt
-                    }
-                });
-                lightbox.on('close', () => {
-                    console.log('Gallery closed');
-                    pswp = null;
-                });
-                lightbox.init();
                 logToUser("Loaded items!") // clear progress bar
-                let openGalleryButton = document.getElementById("open-gallery-button");
-                openGalleryButton.onclick = () => {
-                    const index = parseInt(localStorage.getItem("index")) // will be NaN if null, still works I think
-                    lightbox.loadAndOpen(index);
-                };
-                openGalleryButton.style.visibility = "visible";
+                initGallery(options)
             })
             .catch((error) => {
-                uploadResult.innerHTML = error;
-                console.error(error)
+                logToUser(error)
             });
     }
 
     function addNewKeybinding() {
         let keybinding = {
-            id: uid(),
+            id: uid(), //unique id, so i dont have to check for duplicate keys / folders
             key: "🔑",
             folder: "other",
         }
-        let keybindings = getKeybindings()
-        if (!keybindings) {
-            keybindings = []
-        }
+        let keybindings = localStorage.getKeybindings()
         keybindings.push(keybinding)
-        setKeybindings(keybindings)
-        addToKeybindingsTable(keybinding)
+        localStorage.setKeybindings(keybindings)
+        appendToKeybindingTable(keybinding)
         return keybinding;
     }
 
     function updateKeybinding(keybinding) {
-        let keybindings = getKeybindings()
-        if (!keybindings) {
-            console.error("No keybindings.")
-            return;
-        }
-
+        let keybindings = localStorage.getKeybindings()
         let indexToUpdate = keybindings.findIndex((element) => element.id === keybinding.id);
-        if (indexToUpdate === -1) {
-            console.error(`Index for ${keybinding} not found.`)
-            return;
-        }
         keybindings[indexToUpdate] = keybinding;
-        setKeybindings(keybindings);
+        localStorage.setKeybindings(keybindings);
     }
 
     function deleteKeybinding(id) {
-        let keybindings = getKeybindings()
+        let keybindings = localStorage.getKeybindings()
         let indexToDelete = keybindings.findIndex((element) => element.id === id);
-        if (indexToDelete === -1) {
-            console.error(`Index for ${id} not found.`)
-            return;
-        }
         keybindings.splice(indexToDelete, 1);
-        setKeybindings(keybindings)
+        localStorage.setKeybindings(keybindings)
     }
 
     function clearKeybindings() {
-        if (!confirm("Clear all keybindings?")) {
+        // clear in storage
+        let keybindings = localStorage.getKeybindings()
+        if (!confirm(`Clear ${keybindings.length} keybindings?`)) {
             return;
         }
+        localStorage.setKeybindings(null)
+
+        // clear in DOM
         let keybindingRows = document.getElementsByClassName("flex-table-row")
         keybindingRows = Array.from(keybindingRows);
-        keybindingRows.shift(); // pop the first element, the header
+        keybindingRows.shift(); // don't remove the first element, the header
         keybindingRows.forEach(keybindingRow => keybindingRow.remove())
-        setKeybindings(null)
     }
 
 
-    function addToKeybindingsTable(keybinding) {
+    function appendToKeybindingTable(keybinding) {
         const keybindingsContainer = document.getElementById('keybindings-table');
 
         const keybindingRow = document.createElement('div');
@@ -389,37 +485,12 @@
         keybindingsContainer.appendChild(keybindingRow);
     }
 
-    function randomString(length) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            counter += 1;
-        }
-        return result;
-    }
-
     const uid = function () {
         return Date.now().toString(36) + Math.random().toString(36).substring(2);
     }
 
 
-    function getKeybindings() {
-        return localStorage.getObject("keybindings");
-    }
-
-    function setKeybindings(keybindings) {
-        return localStorage.setObject("keybindings", keybindings);
-    }
-
-    function onLoad() {
-        let addKeybindingButton = document.getElementById("add-keybinding-button")
-        addKeybindingButton.addEventListener("click", () => addNewKeybinding())
-        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
-        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
-
+    function setupLocalStorageBindings() {
         Storage.prototype.setObject = function (key, value) {
             this.setItem(key, JSON.stringify(value));
         }
@@ -427,42 +498,105 @@
             let value = this.getItem(key);
             return value && JSON.parse(value);
         }
+        // keybindings: an array of objects, where each object is a keybinding object with attributes: key, folder
+        Storage.prototype.getKeybindings = function () {
+            return localStorage.getObject("keybindings") || []
+        }
+        Storage.prototype.setKeybindings = function (keybindings) {
+            return localStorage.setObject("keybindings", keybindings)
+        }
+        // mappings: an object where each key is a filename, with as value the folder it needs to be moved to
+        Storage.prototype.getMappings = function () {
+            return localStorage.getObject("mappings") || {}
+        }
+        Storage.prototype.setMappings = function (mappings) {
+            return localStorage.setObject("mappings", mappings)
+        }
+        // filename: a string of the name of the file the gallery is currently showing / where the gallery last left off
+        Storage.prototype.getFilename = function () {
+            return localStorage.getItem("filename")
+        }
+        Storage.prototype.setFilename = function (filename) {
+            return localStorage.setItem("filename", filename)
+        }
+        // index: an int of the index of the item gallery, FALLBACK for filename
+        Storage.prototype.getIndex = function () {
+            return parseInt(localStorage.getItem("index") || 0)
+        }
+        Storage.prototype.setIndex = function (index) {
+            return localStorage.setItem("index", index)
+        }
+        // uploads: an array of file objects from the upload form, so each file object has a name, mime type, etc
+        Storage.prototype.getUploads = function () {
+            return localStorage.getObject("uploads") || []
+        }
+        Storage.prototype.setUploads = function (uploads) {
+            return localStorage.setObject("uploads", uploads)
+        }
+    }
 
-        let keybindings = getKeybindings()
-        if (!keybindings) {
+    function loadKeybindingTable() {
+        let keybindings = localStorage.getKeybindings()
+        if (keybindings.length === 0) {
             return;
         }
         keybindings.forEach(keybinding => {
-            addToKeybindingsTable(keybinding)
+            appendToKeybindingTable(keybinding)
         })
+        let addKeybindingButton = document.getElementById("add-keybinding-button")
+        addKeybindingButton.addEventListener("click", () => addNewKeybinding())
+        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
+        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
+    }
 
+    function applyKeybinding(keybinding) {
+        //applies a keybinding to the current item open in the gallery
+        let filename = localStorage.getFilename()
+        console.log(`Move ${filename} to ${keybinding.folder}`)
+        let mappings = localStorage.getMappings()
+        mappings[filename] = keybinding.folder
+        localStorage.setMappings(mappings)
+    }
+
+    function keybindingListener(event) {
+        if (!pswp) {
+            //gallery not open
+            return;
+        }
+        let keybindings = localStorage.getKeybindings()
+        let keybindingMatchIndex = keybindings.findIndex(keybinding => keybinding.key === event.key)
+
+        if (keybindingMatchIndex === -1) {
+            //key not bound to any keybinding
+            return;
+        }
+        let keybinding = keybindings[keybindingMatchIndex]
+        applyKeybinding(keybinding)
+
+        let footerKeybindingElement = document.getElementById("footer-keybindings")
+        shakeElement(footerKeybindingElement.children[keybindingMatchIndex])
+
+        pswp.next()
+    }
+
+    function setupListeners() {
+        // file uploader
         let fileInput = document.getElementById("file-upload");
-        fileInput.addEventListener("change", onUpload);
+        fileInput.addEventListener("change", uploadListener);
 
+        // folder uploader
         let folderInput = document.getElementById("folder-upload");
-        folderInput.addEventListener("change", onUpload);
-
-        let yesKeys = ["y", "q"];
-        let noKeys = ["w"];
+        folderInput.addEventListener("change", uploadListener);
 
         document.addEventListener("keydown", event => {
-            if (!pswp) {
-                console.log("Gallery not open.")
-                return;
-            }
-            if (yesKeys.includes(event.key)) {
-                pswp.prev();
-                console.log("YES")
-            }
-            else if (noKeys.includes(event.key)) {
-                pswp.next()
-                console.log("NO")
-            }
-            else {
-                console.log(`Key pressed: ${event.key}`)
-            }
+            keybindingListener(event)
         })
+    }
 
+    function onLoad() {
+        setupLocalStorageBindings()
+        loadKeybindingTable()
+        setupListeners()
     }
 
     onLoad();

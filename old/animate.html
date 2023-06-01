@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <title>Experiments</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --shake-distance: 0.9em;
+        }
+
+        #myDiv {
+            width: 200px;
+            height: 200px;
+            background-color: lightblue;
+            text-align: center;
+            line-height: 200px;
+            cursor: pointer;
+        }
+
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateY(0); }
+            20% { transform: translateY(calc(var(--shake-distance) * -1)); }
+            40% { transform: translateY(var(--shake-distance)); }
+            60% { transform: translateY(calc(var(--shake-distance) * -1)); }
+            80% { transform: translateY(var(--shake-distance)); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="center-parent">
+
+    <div class="center-child">
+        <h1>Animations</h1>
+        <div id="myDiv" onclick="shakeElement(this)">
+            Click me to shake!
+        </div>
+
+
+    </div>
+</div>
+</body>
+<script>
+    function shakeElement(element) {
+        element.classList.add("shake");
+
+        setTimeout(function() {
+            element.classList.remove("shake");
+        }, 400);
+    }
+</script>
+</html>
