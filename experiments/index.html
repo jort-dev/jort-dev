@@ -30,9 +30,37 @@
             display: grid;
             place-items: center;
         }
+        #drag-target {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        #drag-target.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drag-text {
+            font-size: 24px;
+            color: #fff;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
+<div id="drag-target">
+    <span id="drag-text">Drop here to upload</span>
+</div>
 <div class="center-parent">
 
     <div class="center-child">
@@ -47,7 +75,13 @@
             <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
             <input type="file" id="folder-upload" webkitdirectory directory multiple>
         </div>
-        <div id="uploads"></div>
+        <br>
+        <button id="open-tests-button">Show tests</button>
+        <div id="test-section" style="display: none">
+            <button id="example-images-button">Load example images</button>
+            <button id="example-keybindings-button">Load example keybindings</button>
+            <button id="clear-storage-button">Clear all website data</button>
+        </div>
 
         <br>
         <hr>
@@ -70,8 +104,6 @@
         <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
     </div>
     <div class="footer" id="sort-footer" style="visibility: hidden">
-        <!--        todo: add keybinding element for mapped items with deleted keybinds-->
-        <!--        add 'will be moved to' text-->
         <div id="filename-display">Filename</div>
         <div id="mapped-folder-display"></div>
         <div class="footer-keybindings" id="footer-keybindings"></div>
@@ -173,27 +205,34 @@
         });
     }
 
-    function getSampleItems() {
-        let items = [];
+    async function urlToImageFile(filename) {
         const width = 2400
         const height = 1600
-        let img1 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=hoi`
-        let img2 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=hoe`
-        let img3 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=is`
-        let img4 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=het`
-        let img5 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=met mij`
-        let img6 = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=gaat het`
-        let imgs = [img1, img2, img3, img4, img5, img6];
-        for (let i = 0; i < 6; i++) {
-            let item = {};
-            let img = imgs[i]
-            item.src = img
-            item.width = 600
-            item.height = 400
-            item.alt = img
-            items.push(item)
-        }
-        return items;
+        const url = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=${filename}`
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        let file = new File([blob], filename);
+        file = new File([file], file.name, {type: "image/jpeg"}); //cant set it directly
+        return file;
+    }
+
+
+    async function getMockUploadEvent() {
+        const file1 = new File(["Hello, World!"], "hello.txt", {type: "text/plain"});
+
+        const img1 = await urlToImageFile("landscape.jpg");
+        const img2 = await urlToImageFile("face.jpg");
+        const img3 = await urlToImageFile("flower.jpg");
+        const img4 = await urlToImageFile("mom.jpg");
+        const fileList = [img1, img2, img3, file1, img4];
+
+        const mockEvent = {
+            target: {
+                files: fileList
+            }
+        };
+        return mockEvent
     }
 
     function loadGalleryArguments(fileObjects) {
@@ -236,20 +275,25 @@
         }))
     }
 
-    function createKeybindingElement(hotkey, folder) {
+    function createFooterKeybindingElement(key, folder) {
         let keybindingDiv = document.createElement("div")
         keybindingDiv.classList.add("footer-keybinding")
 
-        let keybindingKey = document.createElement("div")
-        keybindingKey.classList.add("footer-keybinding-key")
-        keybindingKey.textContent = hotkey;
+        let keyDiv = document.createElement("div")
+        keyDiv.classList.add("footer-keybinding-key")
+        keyDiv.textContent = key;
 
-        let keybindingFolder = document.createElement("div")
-        keybindingFolder.classList.add("footer-keybinding-folder")
-        keybindingFolder.textContent = folder
+        let folderDiv = document.createElement("div")
+        folderDiv.classList.add("footer-keybinding-folder")
+        folderDiv.textContent = folder
 
-        keybindingDiv.appendChild(keybindingKey)
-        keybindingDiv.appendChild(keybindingFolder)
+        keybindingDiv.style.cursor = "pointer"
+        keybindingDiv.addEventListener("click", () => {
+            applyKeybindingByKey(key)
+        })
+
+        keybindingDiv.appendChild(keyDiv)
+        keybindingDiv.appendChild(folderDiv)
         return keybindingDiv;
     }
 
@@ -257,14 +301,18 @@
         let keybindings = localStorage.getKeybindings()
         let footer = document.getElementById("footer-keybindings")
         keybindings.forEach(keybinding => {
-            let keybindingDiv = createKeybindingElement(keybinding.key, keybinding.folder)
+            let keybindingDiv = createFooterKeybindingElement(keybinding.key, keybinding.folder)
             footer.appendChild(keybindingDiv)
         })
         document.getElementById("sort-footer").style.visibility = "visible"
     }
 
 
-    function highlightKeybindingWithFolder(folder) {
+    function showMappingForCurrentItem(folder) {
+        //show the user to what folder the current item open in the gallery is mapped to
+        let mappedFolderDisplay = document.getElementById("mapped-folder-display")
+        mappedFolderDisplay.textContent = folder
+
         let keybindings = localStorage.getKeybindings()
         let keybindingIndex = keybindings.findIndex(keybinding => keybinding.folder === folder);
         //if not found, index will be -1, so nothing will be highlighted
@@ -334,7 +382,7 @@
         document.getElementById("filename-display").innerText = filename
         let mappedFolder = getMappedFolder(filename)
         //if not found, folder will be undefined, which should not match anything
-        highlightKeybindingWithFolder(mappedFolder)
+        showMappingForCurrentItem(mappedFolder)
     }
 
     function initGallery(options) {
@@ -359,17 +407,12 @@
 
     }
 
-    function uploadListener({target}) {
-        console.log(target.files)
-        if (!target.files.length) {
-            logToUser("No files selected.")
-            return;
-        }
-        let uploadedFileObjects = Array.from(target.files);
+    function processUploadedFiles(fileObjects) {
+        let uploadedFileObjects = Array.from(fileObjects);
         naturalSortFileObjects(uploadedFileObjects) //does not change anything if files are uploaded with the file manager set to sort by name
         let uploadedFilenames = uploadedFileObjects.map(fileObject => fileObject.name)
         localStorage.setUploads(uploadedFilenames)
-        logToUser(`Loading ${target.files.length} items...`);
+        logToUser(`Loading ${uploadedFileObjects.length} items...`);
         let options = loadGalleryArguments(uploadedFileObjects);
 
         //wait for gallery arguments to have all the dimensions before showing open button
@@ -418,18 +461,20 @@
     }
 
     function clearKeybindings() {
+        //return true if keybindings were cleared
         // clear in storage
         let keybindings = localStorage.getKeybindings()
         if (!confirm(`Clear ${keybindings.length} keybindings?`)) {
-            return;
+            return false;
         }
-        localStorage.setKeybindings(null)
+        localStorage.setKeybindings([])
 
         // clear in DOM
         let keybindingRows = document.getElementsByClassName("flex-table-row")
         keybindingRows = Array.from(keybindingRows);
         keybindingRows.shift(); // don't remove the first element, the header
         keybindingRows.forEach(keybindingRow => keybindingRow.remove())
+        return true;
     }
 
 
@@ -489,6 +534,121 @@
         return Date.now().toString(36) + Math.random().toString(36).substring(2);
     }
 
+    function loadKeybindingTable() {
+        let keybindings = localStorage.getKeybindings()
+        if (keybindings.length === 0) {
+            return;
+        }
+        keybindings.forEach(keybinding => {
+            appendToKeybindingTable(keybinding)
+        })
+    }
+
+    function mapToFolder(folder) {
+        //applies a keybinding to the current item open in the gallery
+        let filename = localStorage.getFilename()
+        console.log(`Move ${filename} to ${folder}`)
+        let mappings = localStorage.getMappings()
+        mappings[filename] = folder
+        localStorage.setMappings(mappings)
+    }
+
+    function applyKeybindingByKey(key) {
+        if (!pswp) {
+            //gallery not open
+            return;
+        }
+        let keybindings = localStorage.getKeybindings()
+        let keybindingMatchIndex = keybindings.findIndex(keybinding => keybinding.key === key)
+
+        if (keybindingMatchIndex === -1) {
+            //key not bound to any keybinding
+            return;
+        }
+        let keybinding = keybindings[keybindingMatchIndex]
+        mapToFolder(keybinding.folder)
+
+        let footerKeybindingElement = document.getElementById("footer-keybindings")
+        shakeElement(footerKeybindingElement.children[keybindingMatchIndex])
+
+        pswp.next()
+    }
+
+    async function loadExampleImages() {
+        let mockEvent = await getMockUploadEvent()
+        processUploadedFiles(mockEvent)
+    }
+
+    function getExampleKeybindings() {
+        let keybindings = []
+        keybindings.push({id: "id1", key: "p", folder: "people"})
+        keybindings.push({id: "id2", key: "l", folder: "landscapes"})
+        keybindings.push({id: "id3", key: "f", folder: "flower-folder"})
+        keybindings.push({id: "id4", key: "o", folder: "other"})
+        return keybindings;
+    }
+
+    function setExampleKeybindings() {
+        if (clearKeybindings()) {
+            localStorage.setKeybindings(getExampleKeybindings())
+            loadKeybindingTable()
+        }
+    }
+
+    function clearStorage() {
+        if (!confirm("Clear all saved data?")) {
+            return;
+        }
+        localStorage.clear()
+        location.reload()
+    }
+
+    function setupListeners() {
+        // file uploader
+        let fileInput = document.getElementById("file-upload");
+        fileInput.addEventListener("change", ({target}) => {
+            if (!target.files || !target.files.length) {
+                logToUser("No files selected.")
+                return;
+            }
+            processUploadedFiles(target.files)
+        });
+
+        // folder uploader
+        let folderInput = document.getElementById("folder-upload");
+        folderInput.addEventListener("change", ({target}) => {
+            if (!target.files || !target.files.length) {
+                logToUser("No folder selected.")
+                return;
+            }
+            processUploadedFiles(target.files)
+        });
+
+        //keybindings table
+        let addKeybindingButton = document.getElementById("add-keybinding-button")
+        addKeybindingButton.addEventListener("click", () => addNewKeybinding())
+        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
+        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
+
+        //testing / example values loader buttons
+        let exampleKeybindingsButton = document.getElementById("example-keybindings-button")
+        exampleKeybindingsButton.addEventListener("click", () => {
+            setExampleKeybindings()
+        })
+        let exampleImagesButton = document.getElementById("example-images-button")
+        exampleImagesButton.addEventListener("click", async () => {
+            await loadExampleImages()
+        })
+        let clearStorageButton = document.getElementById("clear-storage-button")
+        clearStorageButton.addEventListener("click", () => {
+            clearStorage()
+        })
+
+        document.addEventListener("keydown", event => {
+            applyKeybindingByKey(event.key)
+        })
+    }
+
 
     function setupLocalStorageBindings() {
         Storage.prototype.setObject = function (key, value) {
@@ -533,71 +693,59 @@
         Storage.prototype.setUploads = function (uploads) {
             return localStorage.setObject("uploads", uploads)
         }
+
     }
 
-    function loadKeybindingTable() {
-        let keybindings = localStorage.getKeybindings()
-        if (keybindings.length === 0) {
-            return;
+    function setExampleKeybindingsOnFirstVisit() {
+        if (localStorage.getObject("keybindings") === null) {
+            localStorage.setKeybindings(getExampleKeybindings())
         }
-        keybindings.forEach(keybinding => {
-            appendToKeybindingTable(keybinding)
-        })
-        let addKeybindingButton = document.getElementById("add-keybinding-button")
-        addKeybindingButton.addEventListener("click", () => addNewKeybinding())
-        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
-        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
-    }
-
-    function applyKeybinding(keybinding) {
-        //applies a keybinding to the current item open in the gallery
-        let filename = localStorage.getFilename()
-        console.log(`Move ${filename} to ${keybinding.folder}`)
-        let mappings = localStorage.getMappings()
-        mappings[filename] = keybinding.folder
-        localStorage.setMappings(mappings)
-    }
-
-    function keybindingListener(event) {
-        if (!pswp) {
-            //gallery not open
-            return;
-        }
-        let keybindings = localStorage.getKeybindings()
-        let keybindingMatchIndex = keybindings.findIndex(keybinding => keybinding.key === event.key)
-
-        if (keybindingMatchIndex === -1) {
-            //key not bound to any keybinding
-            return;
-        }
-        let keybinding = keybindings[keybindingMatchIndex]
-        applyKeybinding(keybinding)
-
-        let footerKeybindingElement = document.getElementById("footer-keybindings")
-        shakeElement(footerKeybindingElement.children[keybindingMatchIndex])
-
-        pswp.next()
-    }
-
-    function setupListeners() {
-        // file uploader
-        let fileInput = document.getElementById("file-upload");
-        fileInput.addEventListener("change", uploadListener);
-
-        // folder uploader
-        let folderInput = document.getElementById("folder-upload");
-        folderInput.addEventListener("change", uploadListener);
-
-        document.addEventListener("keydown", event => {
-            keybindingListener(event)
-        })
     }
 
     function onLoad() {
         setupLocalStorageBindings()
+        setExampleKeybindingsOnFirstVisit()
         loadKeybindingTable()
         setupListeners()
     }
+    const toggleButton = document.getElementById('open-tests-button');
+    const expandedSection = document.getElementById('test-section');
+
+    toggleButton.addEventListener('click', function() {
+        if (expandedSection.style.display === 'none') {
+            expandedSection.style.display = 'block';
+        } else {
+            expandedSection.style.display = 'none';
+        }
+    });
+
+    const dragTarget = document.getElementById('drag-target');
+
+    document.addEventListener('dragenter', function(event) {
+        dragTarget.classList.add('show');
+    });
+
+    document.addEventListener('dragleave', function(event) {
+        dragTarget.classList.remove('show');
+    });
+
+    document.addEventListener('dragover', function(event) {
+        event.preventDefault();
+    });
+
+    document.addEventListener('drop', function(event) {
+        event.preventDefault();
+        dragTarget.classList.remove('show');
+
+        // Handle the dropped files here
+        processUploadedFiles(event.dataTransfer.files)
+        // const files = event.dataTransfer.files;
+        // for (let i = 0; i < files.length; i++) {
+        //     const file = files[i];
+        //     console.log('Uploaded file:', file.name);
+        //     // Perform further processing or upload logic
+        // }
+    });
 
     onLoad();
 
