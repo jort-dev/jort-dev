@@ -30,6 +30,7 @@
             display: grid;
             place-items: center;
         }
+
         #drag-target {
             display: none;
             position: fixed;
@@ -576,7 +577,7 @@
 
     async function loadExampleImages() {
         let mockEvent = await getMockUploadEvent()
-        processUploadedFiles(mockEvent)
+        onUploadListener(mockEvent)
     }
 
     function getExampleKeybindings() {
@@ -603,25 +604,25 @@
         location.reload()
     }
 
+    function onUploadListener({target}) {
+        if (!target.files || !target.files.length) {
+            logToUser("No files selected.")
+            return;
+        }
+        processUploadedFiles(target.files)
+    }
+
     function setupListeners() {
         // file uploader
         let fileInput = document.getElementById("file-upload");
-        fileInput.addEventListener("change", ({target}) => {
-            if (!target.files || !target.files.length) {
-                logToUser("No files selected.")
-                return;
-            }
-            processUploadedFiles(target.files)
+        fileInput.addEventListener("change", (event) => {
+            onUploadListener(event)
         });
 
         // folder uploader
         let folderInput = document.getElementById("folder-upload");
-        folderInput.addEventListener("change", ({target}) => {
-            if (!target.files || !target.files.length) {
-                logToUser("No folder selected.")
-                return;
-            }
-            processUploadedFiles(target.files)
+        folderInput.addEventListener("change", (event) => {
+            onUploadListener(event)
         });
 
         //keybindings table
@@ -708,43 +709,42 @@
         loadKeybindingTable()
         setupListeners()
     }
+
     const toggleButton = document.getElementById('open-tests-button');
     const expandedSection = document.getElementById('test-section');
 
-    toggleButton.addEventListener('click', function() {
+    toggleButton.addEventListener('click', function () {
         if (expandedSection.style.display === 'none') {
             expandedSection.style.display = 'block';
-        } else {
+        }
+        else {
             expandedSection.style.display = 'none';
         }
     });
 
     const dragTarget = document.getElementById('drag-target');
 
-    document.addEventListener('dragenter', function(event) {
+    document.addEventListener('dragenter', function (event) {
         dragTarget.classList.add('show');
     });
 
-    document.addEventListener('dragleave', function(event) {
+    document.addEventListener('dragleave', function (event) {
         dragTarget.classList.remove('show');
     });
 
-    document.addEventListener('dragover', function(event) {
+    document.addEventListener('dragover', function (event) {
         event.preventDefault();
     });
 
-    document.addEventListener('drop', function(event) {
+    document.addEventListener('drop', function (event) {
         event.preventDefault();
         dragTarget.classList.remove('show');
-
-        // Handle the dropped files here
+        console.log(event)
+        if (event.dataTransfer.files.length === 0){
+            logToUser("No files dropped.")
+            return;
+        }
         processUploadedFiles(event.dataTransfer.files)
-        // const files = event.dataTransfer.files;
-        // for (let i = 0; i < files.length; i++) {
-        //     const file = files[i];
-        //     console.log('Uploaded file:', file.name);
-        //     // Perform further processing or upload logic
-        // }
     });
 
     onLoad();
