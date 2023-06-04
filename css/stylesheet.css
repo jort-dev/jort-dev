@@ -215,6 +215,8 @@ body, html {
     animation: shake 0.3s;
 }
 
+
+
 @keyframes shake {
     0% { transform: translateY(0); }
     20% { transform: translateY(calc(var(--shake-distance) * -1)); }
@@ -222,5 +224,12 @@ body, html {
     60% { transform: translateY(calc(var(--shake-distance) * -1)); }
     80% { transform: translateY(var(--shake-distance)); }
     100% { transform: translateY(0); }
+}
+
+/*vertical*/
+
+.vertical {
+    display: flex;
+    flex-direction: column;
 }
 
