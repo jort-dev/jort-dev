@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+
+    .section-title {
+        margin-bottom: 10px;
+    }
+
+    .collapse-btn {
+        margin-left: 10px;
+    }
+
+    .section-content {
+        display: none;
+        margin-top: 10px;
+    }
+</style>
+<body>
+
+<div class="section">
+    <h2 class="section-title">Section Title</h2>
+    <button class="collapse-btn">Open/Close</button>
+    <div class="section-content">
+        <p>This is the content of the section.</p>
+        <p>It will be collapsed or expanded based on the button click.</p>
+    </div>
+</div>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const section = document.querySelector(".section");
+        const collapseBtn = section.querySelector(".collapse-btn");
+        const sectionContent = section.querySelector(".section-content");
+
+        collapseBtn.addEventListener("click", function () {
+            if (sectionContent.style.display === "none") {
+                sectionContent.style.display = "block";
+                collapseBtn.textContent = "Close";
+            }
+            else {
+                sectionContent.style.display = "none";
+                collapseBtn.textContent = "Open";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

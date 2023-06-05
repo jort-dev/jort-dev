@@ -24,6 +24,7 @@ body, html {
     place-items: center;
     height: 100vh;
     padding: 0px 10px 0px 10px; /*prevent text to touch border on smaller screens*/
+    /*min-width: 30%;*/
 }
 
 /*same but for horizontal center only*/
@@ -42,7 +43,16 @@ body, html {
 
 /*the childs to be centered (not needed)*/
 .center-child {
-    /*border: 1px solid black;*/
+    /*in chrome mobile, makes page take up whole space*/
+    min-width: 90vw;
+}
+
+@media screen and (min-width: 768px) {
+    .center-child {
+        /*prevents some page jumping when collapsing items*/
+        min-width: 30vw;
+        max-width: 30vw;
+    }
 }
 
 
@@ -206,7 +216,8 @@ body, html {
 .selected-footer-keybinding {
     background-color: var(--theme-color);
 }
-.selected-footer-keybinding-item{
+
+.selected-footer-keybinding-item {
     background-color: greenyellow;
 }
 
@@ -216,14 +227,25 @@ body, html {
 }
 
 
-
 @keyframes shake {
-    0% { transform: translateY(0); }
-    20% { transform: translateY(calc(var(--shake-distance) * -1)); }
-    40% { transform: translateY(var(--shake-distance)); }
-    60% { transform: translateY(calc(var(--shake-distance) * -1)); }
-    80% { transform: translateY(var(--shake-distance)); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+    20% {
+        transform: translateY(calc(var(--shake-distance) * -1));
+    }
+    40% {
+        transform: translateY(var(--shake-distance));
+    }
+    60% {
+        transform: translateY(calc(var(--shake-distance) * -1));
+    }
+    80% {
+        transform: translateY(var(--shake-distance));
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /*vertical*/
@@ -231,5 +253,45 @@ body, html {
 .vertical {
     display: flex;
     flex-direction: column;
+}
+
+/*collapsable section*/
+/*hold everything about the section*/
+.c-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/*hold the title and the collapse image button*/
+.c-section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.c-section-button {
+    transition: transform 200ms ease;
+    margin-right: 1em;
+}
+
+.c-section-title {
+    flex-grow: 1;
+    margin: 0;
+}
+
+/*the content to hide / show*/
+.c-section-content {
+    /*show by default if javascript is disabled*/
+    display: block;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 

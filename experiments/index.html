@@ -1,64 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Slurp Animation</title>
-    <style>
-        #trash {
-            width: 100px;
-            height: 100px;
-            /*background-image: url('trash.png'); !* Replace with your own trash icon *!*/
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            border: 2px solid black;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
+    <meta charset="UTF-8">
+    <title>Experiments</title>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/stylesheet.css">
 
-        #file {
-            width: 50px;
-            height: 50px;
-            background-color: #f44336; /* Replace with your file color */
-            position: absolute;
-            bottom: 0;
-            left: 25px;
-            transition: transform 0.4s ease-in-out;
-        }
+    <style>
     </style>
 </head>
 <body>
-<div id="trash"></div>
-<div id="file"></div>
+
+<div class="center-horizontal-parent">
+    <div class="center-child">
+        <button id="clear-storage-button">Clear all website data</button>
+
+        <section class="c-section" id="c-section-1">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h1 class="c-section-title">Title</h1>
+            </div>
+            <div class="c-section-content">
+                Content a lot of content holy shit that is a lot of content
+                Content a lot of content holy shit that is a lot of content
+                Content a lot of content holy shit that is a lot of content
+                Content a lot of content holy shit that is a lot of content
+                Content a lot of content holy shit that is a lot of content
+            </div>
+        </section>
+    </div>
+</div>
 
 <script>
-    const file = document.getElementById('file');
-    const trash = document.getElementById('trash');
+    Storage.prototype.setBoolean = function (key, value) {
+        this.setItem(key, value)
+    }
+    Storage.prototype.getBoolean = function (key) {
+        let value = JSON.parse(this.getItem(key));
+        return value;
+    }
+    Storage.prototype.toggleBoolean = function (key) {
+        this.setBoolean(key, !this.getBoolean(key))
+    }
 
-    file.addEventListener('click', () => {
-        file.style.transform = 'translateY(-100px) scale(0)';
-        setTimeout(() => {
-            file.style.transform = 'translateY(0) scale(1)';
-        }, 400);
-    });
+    function clearStorage() {
+        localStorage.clear()
+        location.reload()
+    }
 
-    trash.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        trash.style.backgroundImage = "url('trash_open.png')"; /* Replace with your own open trash icon */
-    });
+    document.getElementById("clear-storage-button").addEventListener("click", clearStorage)
 
-    trash.addEventListener('dragleave', () => {
-        trash.style.backgroundImage = "url('trash.png')"; /* Replace with your own trash icon */
-    });
+    function setupSection(sectionName) {
+        let section = document.getElementById(sectionName)
+        let sectionButton = section.querySelector("img")
+        let sectionContent = section.querySelectorAll("div")[1]
+        let openSection = () => {
+            sectionContent.style.display = "block"
+            sectionButton.style.transform = "rotate(90deg)"
+            sectionContent.style.animation = "fadeIn 0.5s ease-out"
+        }
+        let closeSection = () => {
+            sectionContent.style.display = "none"
+            sectionButton.style.transform = "rotate(0deg)"
+        }
+        let applySectionStateFromStorage = () => {
+            let isOpen = localStorage.getBoolean(sectionName)
+            if (isOpen) {
+                closeSection()
+            }
+            else {
+                openSection()
+            }
+        }
+        sectionButton.addEventListener("click", () => {
+            localStorage.toggleBoolean(sectionName)
+            applySectionStateFromStorage()
+        })
+        applySectionStateFromStorage()
+    }
 
-    trash.addEventListener('drop', (event) => {
-        event.preventDefault();
-        file.style.transform = 'translateY(100px)';
-        setTimeout(() => {
-            file.style.transform = 'translateY(0)';
-        }, 400);
-        trash.style.backgroundImage = "url('trash.png')"; /* Replace with your own trash icon */
-    });
+
+    let sectionName = "c-section-1"
+    setupSection(sectionName)
+
 </script>
+
 </body>
 </html>

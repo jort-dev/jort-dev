@@ -63,58 +63,119 @@
     <span id="drag-text">Drop here to upload</span>
 </div>
 <div class="center-parent">
-
     <div class="center-child">
-        <h1>Photosorter</h1>
+        <h1>Jorts PhotoSorter</h1>
         <div id="log-bar">
         </div>
-        <div class="upload-btn-wrapper">
-            <button class="link-button link-button-inverse" id="upload-btn">Upload items</button>
-            <input id="file-upload" type="file" name="myfile" multiple/>
-        </div>
-        <div class="upload-btn-wrapper">
-            <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
-            <input type="file" id="folder-upload" webkitdirectory directory multiple>
-        </div>
-        <div id="upload-info"></div>
-        <br>
 
-        <div class="vertical">
-            <h3>Advanced options</h3>
-            <button id="clear-mappings-button">Clear sorts</button>
-            <button id="example-images-button">Load example images</button>
-            <button id="example-keybindings-button">Load example keybindings</button>
-            <button id="clear-storage-button">Clear all website data</button>
-        </div>
-        <div class="vertical">
-            <h3>Apply sorting</h3>
-            <button id="download-universal-sort">Zip file, slow but universal</button>
-            <button id="download-windows-sort">Windows sort</button>
-            <button id="download-windows-undo-sort">Windows undo</button>
-            <button id="download-linux-sort">Linux sort</button>
-            <button id="download-linux-undo-sort">Linux undo</button>
-        </div>
-
-        <br>
-        <hr>
-        <h2>Keybindings</h2>
-        <div class="flex-table" id="keybindings-table">
-            <div class="flex-table-row flex-table-first-row">
-                <div class="flex-table-cell">Hotkey</div>
-                <div class="flex-table-cell">Folder</div>
-                <button class="link-button link-button-red" id="clear-keybindings-button">Clear</button>
+        <section class="c-section" id="intro-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">What is it?</h3>
             </div>
-        </div>
-        <button class="link-button" id="add-keybinding-button">Add</button>
+            <div class="c-section-content">
+                PhotoSorter is an easy-to-understand web app to sort your photos!
+                <br>
+                All your data is stored in your browser, so don't worry
 
 
-        <br>
-        <br>
-        <hr>
-        <br>
-        <br>
-        <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
+            </div>
+        </section>
+
+        <section class="c-section" id="upload-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">1: Upload</h3>
+            </div>
+            <div class="c-section-content">
+                Either upload a folder or files.
+                <br>
+                You can also drag and drop files on the page!
+                <br>
+                <br>
+                <div class="upload-btn-wrapper">
+                    <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
+                    <input type="file" id="folder-upload" webkitdirectory directory multiple>
+                </div>
+                <div class="upload-btn-wrapper">
+                    <button class="link-button link-button-inverse" id="upload-btn">Upload files</button>
+                    <input id="file-upload" type="file" name="myfile" multiple/>
+                </div>
+                <br>
+                <br>
+                <div id="upload-info"></div>
+                <br>
+            </div>
+        </section>
+
+
+        <section class="c-section" id="keybinding-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">2: Folders</h3>
+            </div>
+            <div class="c-section-content">
+                Define the names of the folders you want to sort to here.
+                <br>
+                The folders will be created if they don't exist.
+                <br>
+                Also you can bind keys to the folders, so that if you press that key whilst sorting, it gets moved to that folder!
+                <div class="flex-table" id="keybindings-table">
+                    <div class="flex-table-row flex-table-first-row">
+                        <div class="flex-table-cell">Hotkey</div>
+                        <div class="flex-table-cell">Folder</div>
+                        <button class="link-button link-button-red" id="clear-keybindings-button">Clear</button>
+                    </div>
+                </div>
+                <button class="link-button" id="add-keybinding-button">Add</button>
+            </div>
+        </section>
+
+        <section class="c-section" id="sort-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">3: Sort</h3>
+            </div>
+            <div class="c-section-content">
+                Click to open the gallery to start sorting!
+                <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
+            </div>
+        </section>
+
+        <section class="c-section" id="apply-sort-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">4: Apply sorting</h3>
+            </div>
+            <div class="c-section-content">
+                <div class="vertical">
+                    <button id="download-universal-sort">Zip file, slow but universal</button>
+                    <button id="download-windows-sort">Windows sort</button>
+                    <button id="download-windows-undo-sort">Windows undo</button>
+                    <button id="download-linux-sort">Linux sort</button>
+                    <button id="download-linux-undo-sort">Linux undo</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="c-section" id="advanced-options-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h3 class="c-section-title">Advanced options</h3>
+            </div>
+            <div class="c-section-content">
+                <div class="vertical">
+                    <h3>Advanced options</h3>
+                    <button id="clear-mappings-button">Clear sorts</button>
+                    <button id="example-images-button">Load example images</button>
+                    <button id="example-keybindings-button">Load example keybindings</button>
+                    <button id="clear-storage-button">Clear all website data</button>
+                </div>
+            </div>
+        </section>
+
     </div>
+
     <div class="footer" id="sort-footer" style="visibility: hidden">
         <div id="filename-display">Filename</div>
         <div id="mapped-folder-display"></div>
@@ -804,6 +865,18 @@
             return localStorage.setObject("uploads", uploads)
         }
 
+        // boolean storage, used for section state memory
+        Storage.prototype.setBoolean = function (key, value) {
+            this.setItem(key, value)
+        }
+        Storage.prototype.getBoolean = function (key) {
+            let value = JSON.parse(this.getItem(key));
+            return value;
+        }
+        Storage.prototype.toggleBoolean = function (key) {
+            this.setBoolean(key, !this.getBoolean(key))
+        }
+
     }
 
     function setExampleKeybindingsOnFirstVisit() {
@@ -811,11 +884,49 @@
             localStorage.setKeybindings(getExampleKeybindings())
         }
     }
+    function setupSection(sectionName) {
+        let section = document.getElementById(sectionName)
+        let sectionButton = section.querySelector("img")
+        let sectionContent = section.querySelectorAll("div")[1]
+        let openSection = () => {
+            sectionContent.style.display = "block"
+            sectionButton.style.transform = "rotate(90deg)"
+            sectionContent.style.animation = "fadeIn 0.5s ease-out"
+        }
+        let closeSection = () => {
+            sectionContent.style.display = "none"
+            sectionButton.style.transform = "rotate(0deg)"
+        }
+        let applySectionStateFromStorage = () => {
+            let isOpen = localStorage.getBoolean(sectionName)
+            if (isOpen) {
+                closeSection()
+            }
+            else {
+                openSection()
+            }
+        }
+        sectionButton.addEventListener("click", () => {
+            localStorage.toggleBoolean(sectionName)
+            applySectionStateFromStorage()
+        })
+        applySectionStateFromStorage()
+    }
+
+
+    function setupSections(){
+        let sections = document.querySelectorAll('.c-section')
+        sections.forEach(section =>{
+            setupSection(section.id)
+        })
+        // setupSection("upload-section")
+    }
 
     function onLoad() {
         setupLocalStorageBindings()
         setExampleKeybindingsOnFirstVisit()
         loadKeybindingTable()
+        setupSections()
         setupListeners()
     }
 
