@@ -9,102 +9,42 @@
     <link rel="stylesheet" href="/photoswipe/dist/photoswipe.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
     <style>
-        .custom-html-slide {
-            font-size: 40px;
-            line-height: 45px;
-            max-width: 400px;
-            width: 100%;
-            padding: 0 20px;
-            margin: 50px auto 0;
-            color: #fff;
-        }
-
-        .footer {
-            background: white;
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 10vh;
-            z-index: 10000000000000;
-            display: grid;
-            place-items: center;
-        }
-
-        #drag-target {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        #drag-target.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #drag-text {
-            font-size: 24px;
-            color: #fff;
-            background-color: #333;
-            padding: 20px;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
 <div id="drag-target">
-    <span id="drag-text">Drop here to upload</span>
+    <span id="drag-text">Drop to open</span>
 </div>
+<div id="snackbar"></div>
 <div class="center-parent">
     <div class="center-child">
         <h1>Jorts PhotoSorter</h1>
+        <p class="subtitle">
+            Sort within your browser!
+        </p>
         <div id="log-bar">
         </div>
-
-        <section class="c-section" id="intro-section">
-            <div class="c-section-title-row">
-                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">What is it?</h3>
-            </div>
-            <div class="c-section-content">
-                PhotoSorter is an easy-to-understand web app to sort your photos!
-                <br>
-                All your data is stored in your browser, so don't worry
-
-
-            </div>
-        </section>
 
         <section class="c-section" id="upload-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">1: Upload</h3>
+                <h2 class="c-section-title">1: Upload</h2>
             </div>
             <div class="c-section-content">
-                Either upload a folder or files.
+                Open or drop files to sort.
                 <br>
-                You can also drag and drop files on the page!
-                <br>
-                <br>
+
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
+                    <button class="link-button link-button-inverse" id="folder-upload-btn">Open folder</button>
                     <input type="file" id="folder-upload" webkitdirectory directory multiple>
                 </div>
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="upload-btn">Upload files</button>
+                    <button class="link-button link-button-inverse" id="upload-btn">Open files</button>
                     <input id="file-upload" type="file" name="myfile" multiple/>
                 </div>
                 <br>
-                <br>
                 <div id="upload-info"></div>
-                <br>
+                <div id="previous-upload-info"></div>
             </div>
         </section>
 
@@ -112,29 +52,28 @@
         <section class="c-section" id="keybinding-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">2: Folders</h3>
+                <h2 class="c-section-title">2: Folders</h2>
             </div>
             <div class="c-section-content">
-                Define the names of the folders you want to sort to here.
-                <br>
-                The folders will be created if they don't exist.
-                <br>
-                Also you can bind keys to the folders, so that if you press that key whilst sorting, it gets moved to that folder!
+                Enter the names of the folders to sort to.
                 <div class="flex-table" id="keybindings-table">
                     <div class="flex-table-row flex-table-first-row">
-                        <div class="flex-table-cell">Hotkey</div>
-                        <div class="flex-table-cell">Folder</div>
-                        <button class="link-button link-button-red" id="clear-keybindings-button">Clear</button>
+                        <div class="flex-table-cell flex-table-small-cell">Hotkey</div>
+                        <div class="flex-table-cell flex-table-big-cell">Folder</div>
+                        <!--hehe-->
+                        <button class="flex-table-cell flex-table-small-cell invisible-button"
+                                id="add-keybinding-button"><span
+                                style="color: transparent;  text-shadow: 0 0 0 green; transform: rotate(45deg); display: inline-block">❌</span>
+                        </button>
                     </div>
                 </div>
-                <button class="link-button" id="add-keybinding-button">Add</button>
             </div>
         </section>
 
         <section class="c-section" id="sort-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">3: Sort</h3>
+                <h2 class="c-section-title">3: Sort</h2>
             </div>
             <div class="c-section-content">
                 Click to open the gallery to start sorting!
@@ -145,7 +84,7 @@
         <section class="c-section" id="apply-sort-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">4: Apply sorting</h3>
+                <h2 class="c-section-title">4: Apply sorting</h2>
             </div>
             <div class="c-section-content">
                 <div class="vertical">
@@ -161,11 +100,10 @@
         <section class="c-section" id="advanced-options-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h3 class="c-section-title">Advanced options</h3>
+                <h4 class="c-section-title">Advanced options</h4>
             </div>
             <div class="c-section-content">
                 <div class="vertical">
-                    <h3>Advanced options</h3>
                     <button id="clear-mappings-button">Clear sorts</button>
                     <button id="example-images-button">Load example images</button>
                     <button id="example-keybindings-button">Load example keybindings</button>
@@ -193,15 +131,20 @@
     let pswp = null; // photoswipe instance, it is non-null if open
     let lastTimeoutId = null; // used to log to user with a timeout
     let loadedCount = 0; // keep track of how many uploaded items are loaded for gallery
+    let dragCounter = 0; // file drop: keep count of drag events to identify fake dragleave events
 
     function logToUser(msg, timeout = 3000) {
         clearTimeout(lastTimeoutId);
-        let msgBar = document.getElementById("log-bar");
-        msgBar.innerText = msg;
-        console.log(msgBar.innerText)
         if (timeout > 0) {
+            let toastElement = document.getElementById("snackbar");
+            toastElement.textContent = msg
+            toastElement.classList.add("show")
+            toastElement.style.visibility = "visible"
+            let duration = timeout / 1000 - 0.5
+            toastElement.style.animation = `fadein 0.5s, fadeout 0.5s ${duration}s`
             lastTimeoutId = setTimeout(function () {
-                msgBar.innerText = " ";
+                toastElement.classList.remove("show");
+                toastElement.style.visibility = "hidden"
             }, timeout);
         }
     }
@@ -361,7 +304,6 @@
         folderDiv.classList.add("footer-keybinding-folder")
         folderDiv.textContent = folder
 
-        keybindingDiv.style.cursor = "pointer"
         keybindingDiv.addEventListener("click", () => {
             applyKeybindingByKey(key)
         })
@@ -481,15 +423,26 @@
 
     }
 
+
     function displayUploadInformation() {
+        document.getElementById("previous-upload-info").innerHTML = "" //otherwise double information
+        let infoEl = document.getElementById("upload-info")
         let uploadedFilenames = localStorage.getUploads()
         let mappedFilenames = Object.keys(localStorage.getMappings())
         let mappingsThatWorkOnThisUpload = mappedFilenames.filter(filename => uploadedFilenames.includes(filename))
-        let infoEl = document.getElementById("upload-info")
-        infoEl.textContent = `You've uploaded ${uploadedFilenames.length} files, of which ${mappingsThatWorkOnThisUpload.length} are already sorted.`
+        let clearSortsLink = document.createElement("a")
+        clearSortsLink.classList.add("link")
+        clearSortsLink.addEventListener("click", clearMappings)
+        clearSortsLink.textContent = `Reset sorted items`
+        infoEl.textContent = `You've uploaded ${uploadedFilenames.length} files, of which ${mappingsThatWorkOnThisUpload.length} are already sorted. `
+        infoEl.appendChild(document.createElement("br"))
+        infoEl.appendChild(clearSortsLink)
     }
 
-    function processUploadedFiles(fileObjects) {
+    function handleUploadedFiles(fileObjects) {
+
+        openSection("keybinding-section")
+        openSection("sort-section")
         let uploadedFileObjects = Array.from(fileObjects);
         naturalSortFileObjects(uploadedFileObjects)
         let uploadedFilenames = uploadedFileObjects.map(fileObject => fileObject.name)
@@ -568,9 +521,10 @@
         keybindingRow.classList.add('flex-table-row');
 
         const hotkeyInput = document.createElement('button');
-        hotkeyInput.classList.add('neutral-button');
+        hotkeyInput.classList.add('invisible-button');
         hotkeyInput.title = "Change key"
         hotkeyInput.classList.add('flex-table-cell');
+        hotkeyInput.classList.add('flex-table-small-cell');
         hotkeyInput.textContent = keybinding.key;
         hotkeyInput.addEventListener("click", () => {
             console.log(`Waiting for user to press key to bind to folder '${keybinding.folder}'...`)
@@ -578,6 +532,7 @@
             document.addEventListener("keydown", event => {
                 if (event.key === "Escape") {
                     console.log("Bind cancelled.")
+                    hotkeyInput.textContent = keybinding.key;
                     return;
                 }
                 hotkeyInput.textContent = event.key
@@ -590,6 +545,7 @@
 
         const folderInput = document.createElement('input');
         folderInput.classList.add('flex-table-cell');
+        folderInput.classList.add('flex-table-big-cell');
         folderInput.value = keybinding.folder;
         folderInput.addEventListener('input', function () {
             keybinding.folder = folderInput.value;
@@ -597,8 +553,9 @@
         });
 
         const deleteButton = document.createElement('button');
-        deleteButton.classList.add('neutral-button');
+        deleteButton.classList.add('invisible-button');
         deleteButton.classList.add('flex-table-cell');
+        deleteButton.classList.add('flex-table-small-cell');
         deleteButton.textContent = '❌';
         deleteButton.title = "Delete"
         deleteButton.addEventListener('click', () => {
@@ -691,7 +648,7 @@
             logToUser("No files selected.")
             return;
         }
-        processUploadedFiles(target.files)
+        handleUploadedFiles(target.files)
     }
 
     function clearMappings() {
@@ -717,7 +674,7 @@
     }
 
 
-    function getUndoCommands(mv_cmd="mv", delimiter="/"){
+    function getUndoCommands(mv_cmd = "mv", delimiter = "/") {
         let mappings = localStorage.getMappings()
         let mappingKeys = Object.keys(mappings);
         let undoFileContent = ``
@@ -728,7 +685,7 @@
         return undoFileContent
     }
 
-    function getApplyCommands(mv_cmd="mv", delimiter="/"){
+    function getApplyCommands(mv_cmd = "mv", delimiter = "/") {
         let mappings = localStorage.getMappings()
         let mappingKeys = Object.keys(mappings);
         let mappingValues = Object.values(mappings)
@@ -753,6 +710,7 @@
             onUploadListener(event)
         });
 
+
         // folder uploader
         let folderInput = document.getElementById("folder-upload");
         folderInput.addEventListener("change", (event) => {
@@ -762,22 +720,30 @@
         //page wide file drop
         const dragTarget = document.getElementById('drag-target');
         document.addEventListener('dragenter', function (event) {
+            dragCounter++;
             dragTarget.classList.add('show');
         });
         document.addEventListener('dragleave', function (event) {
-            dragTarget.classList.remove('show');
+            dragCounter--;
+            if (dragCounter === 0) {
+                // Perform your actions here when leaving the drag area
+                console.log("Leave")
+                dragTarget.classList.remove('show');
+            }
         });
         document.addEventListener('dragover', function (event) {
             event.preventDefault();
         });
         document.addEventListener('drop', function (event) {
+            console.log(event)
+            dragCounter = 0;
             event.preventDefault();
             dragTarget.classList.remove('show');
             if (event.dataTransfer.files.length === 0) {
                 logToUser("No files dropped.")
                 return;
             }
-            processUploadedFiles(event.dataTransfer.files)
+            handleUploadedFiles(event.dataTransfer.files)
         });
 
         //clear mappings / sorts button
@@ -787,8 +753,8 @@
         //keybindings table
         let addKeybindingButton = document.getElementById("add-keybinding-button")
         addKeybindingButton.addEventListener("click", () => addNewKeybinding())
-        let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
-        clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
+        // let clearKeybindingsButton = document.getElementById("clear-keybindings-button")
+        // clearKeybindingsButton.addEventListener("click", () => clearKeybindings())
 
         // key listener for keybindings
         document.addEventListener("keydown", event => applyKeybindingByKey(event.key))
@@ -811,11 +777,11 @@
             downloadTextAsFile("undo-sorting.sh", `#!/bin/bash\n${getUndoCommands()}`)
         })
         let windowsApplyButton = document.getElementById("download-windows-sort")
-        windowsApplyButton.addEventListener("click", () =>{
+        windowsApplyButton.addEventListener("click", () => {
             downloadTextAsFile("apply-sorting.bat", `${getApplyCommands("move", "\\")}`)
         })
         let windowsUndoButton = document.getElementById("download-windows-undo-sort")
-        windowsUndoButton.addEventListener("click", () =>{
+        windowsUndoButton.addEventListener("click", () => {
             downloadTextAsFile("undo-sorting.bat", `\n${getUndoCommands("move", "\\")}`)
         })
     }
@@ -884,39 +850,59 @@
             localStorage.setKeybindings(getExampleKeybindings())
         }
     }
-    function setupSection(sectionName) {
+
+    function showUserPreviousUploads() {
+        let previousUploadInfo = document.getElementById("previous-upload-info")
+        let uploadedFilenames = localStorage.getUploads()
+        let mappedFilenames = Object.keys(localStorage.getMappings())
+        let mappingsThatWorkOnThisUpload = mappedFilenames.filter(filename => uploadedFilenames.includes(filename))
+        let msg = `Last visit, you've uploaded ${uploadedFilenames.length} files,
+         of which ${mappingsThatWorkOnThisUpload.length} are sorted. <i>Upload them again</i> to continue sorting.`
+        // logToUser(msg, 6000)
+        previousUploadInfo.innerHTML = msg
+    }
+
+    function openSection(sectionName) {
         let section = document.getElementById(sectionName)
         let sectionButton = section.querySelector("img")
         let sectionContent = section.querySelectorAll("div")[1]
-        let openSection = () => {
-            sectionContent.style.display = "block"
-            sectionButton.style.transform = "rotate(90deg)"
-            sectionContent.style.animation = "fadeIn 0.5s ease-out"
+        sectionContent.style.display = "block"
+        sectionButton.style.transform = "rotate(90deg)"
+        sectionContent.style.animation = "fadeIn 0.5s ease-out"
+    }
+
+    function closeSection(sectionName) {
+        let section = document.getElementById(sectionName)
+        let sectionButton = section.querySelector("img")
+        let sectionContent = section.querySelectorAll("div")[1]
+        sectionContent.style.display = "none"
+        sectionButton.style.transform = "rotate(0deg)"
+    }
+
+    function applySectionStateFromStorage(sectionName) {
+        let isOpen = localStorage.getBoolean(sectionName)
+        if (isOpen) {
+            closeSection(sectionName)
         }
-        let closeSection = () => {
-            sectionContent.style.display = "none"
-            sectionButton.style.transform = "rotate(0deg)"
+        else {
+            openSection(sectionName)
         }
-        let applySectionStateFromStorage = () => {
-            let isOpen = localStorage.getBoolean(sectionName)
-            if (isOpen) {
-                closeSection()
-            }
-            else {
-                openSection()
-            }
-        }
+    }
+
+    function setupSection(sectionName) {
+        let section = document.getElementById(sectionName)
+        let sectionButton = section.querySelector("img")
         sectionButton.addEventListener("click", () => {
             localStorage.toggleBoolean(sectionName)
-            applySectionStateFromStorage()
+            applySectionStateFromStorage(sectionName)
         })
-        applySectionStateFromStorage()
+        applySectionStateFromStorage(sectionName)
     }
 
 
-    function setupSections(){
+    function setupSections() {
         let sections = document.querySelectorAll('.c-section')
-        sections.forEach(section =>{
+        sections.forEach(section => {
             setupSection(section.id)
         })
         // setupSection("upload-section")
@@ -924,6 +910,7 @@
 
     function onLoad() {
         setupLocalStorageBindings()
+        showUserPreviousUploads()
         setExampleKeybindingsOnFirstVisit()
         loadKeybindingTable()
         setupSections()

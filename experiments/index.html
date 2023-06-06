@@ -8,10 +8,18 @@
     <link rel="stylesheet" href="/css/stylesheet.css">
 
     <style>
+        #drop_zone {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+        }
     </style>
 </head>
 <body>
 
+<div id="drop_zone">
+    <p>Drag one or more files to this <i>drop zone</i>.</p>
+</div>
 <div class="center-horizontal-parent">
     <div class="center-child">
         <button id="clear-storage-button">Clear all website data</button>
@@ -84,6 +92,81 @@
     let sectionName = "c-section-1"
     setupSection(sectionName)
 
+    // function dragOverHandler(ev) {
+    //     console.log("Show!")
+    //     ev.preventDefault();
+    // }
+    //
+    // function dragLeaveHandler(ev){
+    //     console.log("Clear!")
+    //
+    //     ev.preventDefault();
+    // }
+    //
+    // function dropHandler(ev) {
+    //     console.log("Drop!")
+    //
+    //     // Prevent default behavior (Prevent file from being opened)
+    //     ev.preventDefault();
+    //
+    //     if (ev.dataTransfer.items) {
+    //         // Use DataTransferItemList interface to access the file(s)
+    //         [...ev.dataTransfer.items].forEach((item, i) => {
+    //             // If dropped items aren't files, reject them
+    //             if (item.kind === "file") {
+    //                 const file = item.getAsFile();
+    //                 console.log(`… file[${i}].name = ${file.name}`);
+    //             }
+    //         });
+    //     } else {
+    //         // Use DataTransfer interface to access the file(s)
+    //         [...ev.dataTransfer.files].forEach((file, i) => {
+    //             console.log(`… file[${i}].name = ${file.name}`);
+    //         });
+    //     }
+    // }
+    //
+    // let x = document.getElementById("drop_zone")
+    // x.addEventListener("drop", dropHandler)
+    // x.addEventListener("dragover", dragOverHandler)
+    // x.addEventListener("dragleave", dragLeaveHandler)
+
+
+
+    var counter = 0;
+
+    function handleDragEnter(event) {
+        event.preventDefault();
+        counter++;
+        console.log("Show")
+    }
+
+    function handleDragLeave(event) {
+        event.preventDefault();
+        counter--;
+        if (counter === 0) {
+            // Perform your actions here when leaving the drag area
+            console.log("Leave")
+        }
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        counter = 0;
+        console.log("Drop")
+        // Perform your actions here when the drop occurs
+    }
+
+    var dropArea = document.getElementById("drop_zone");
+
+    dropArea.addEventListener("dragenter", handleDragEnter);
+    dropArea.addEventListener("dragleave", handleDragLeave);
+    dropArea.addEventListener("dragover", handleDragOver);
+    dropArea.addEventListener("drop", handleDrop);
 </script>
 
 </body>
