@@ -13,7 +13,7 @@
 </head>
 <body>
 <div id="drag-target">
-    <span id="drag-text">Drop to open</span>
+    <span id="drag-text">Drop to upload</span>
 </div>
 <div id="snackbar"></div>
 <div class="center-parent">
@@ -28,18 +28,18 @@
         <section class="c-section" id="upload-section">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h2 class="c-section-title">1: Upload</h2>
+                <h2 class="c-section-title">1: Upload files</h2>
             </div>
             <div class="c-section-content">
-                Open or drop files to sort.
+                Upload or drop files to sort.
                 <br>
 
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="folder-upload-btn">Open folder</button>
+                    <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
                     <input type="file" id="folder-upload" webkitdirectory directory multiple>
                 </div>
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="upload-btn">Open files</button>
+                    <button class="link-button link-button-inverse" id="upload-btn">Upload files</button>
                     <input id="file-upload" type="file" name="myfile" multiple/>
                 </div>
                 <br>
@@ -76,41 +76,53 @@
                 <h2 class="c-section-title">3: Sort</h2>
             </div>
             <div class="c-section-content">
-                Click to open the gallery to start sorting!
+                Click to open the gallery to start sorting!<br>
                 <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
             </div>
         </section>
 
-        <section class="c-section" id="apply-sort-section">
+        <section class="c-section" id="apply-windows">
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h2 class="c-section-title">4: Apply sorting</h2>
+                <h2 class="c-section-title">4: Apply sorting - Windows</h2>
             </div>
-            <div class="c-section-content">
-                <div class="vertical">
-                    <button id="download-universal-sort">Zip file, slow but universal</button>
-                    <button id="download-windows-sort">Windows sort</button>
-                    <button id="download-windows-undo-sort">Windows undo</button>
-                    <button id="download-linux-sort">Linux sort</button>
-                    <button id="download-linux-undo-sort">Linux undo</button>
+            <div class="c-section-content" id="windows-export"></div>
+            <section class="c-section" id="apply-linux">
+                <div class="c-section-title-row">
+                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                    <h2 class="c-section-title">4: Apply sorting - Linux / MacOS</h2>
                 </div>
-            </div>
-        </section>
+                <div class="c-section-content" id="linux-export"></div>
+            </section>
 
-        <section class="c-section" id="advanced-options-section">
-            <div class="c-section-title-row">
-                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                <h4 class="c-section-title">Advanced options</h4>
-            </div>
-            <div class="c-section-content">
-                <div class="vertical">
-                    <button id="clear-mappings-button">Clear sorts</button>
-                    <button id="example-images-button">Load example images</button>
-                    <button id="example-keybindings-button">Load example keybindings</button>
-                    <button id="clear-storage-button">Clear all website data</button>
+            <section class="c-section" id="apply-universal">
+                <div class="c-section-title-row">
+                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                    <h2 class="c-section-title">4: Download sorting (universal)</h2>
                 </div>
-            </div>
-        </section>
+                <div class="c-section-content">
+                    Download a .zip file with the items sorted.
+                    This is slower and takes more space compared to applying the sort with commands.
+                    The zip will contain all the files you just uploaded.
+                    <br>
+                    <button id="download-universal-sort" class="link-button link-button-inverse">Zip file</button>
+                </div>
+            </section>
+
+            <section class="c-section" id="advanced-options-section">
+                <div class="c-section-title-row">
+                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                    <h2 class="c-section-title">Advanced options</h2>
+                </div>
+                <div class="c-section-content">
+                    <div class="vertical">
+                        <button id="clear-mappings-button">Clear sorts</button>
+                        <button id="example-images-button">Load example images</button>
+                        <button id="example-keybindings-button">Load example keybindings</button>
+                        <button id="clear-storage-button">Clear all website data</button>
+                    </div>
+                </div>
+            </section>
 
     </div>
 
@@ -124,9 +136,14 @@
 </div>
 
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script type="module">
     import PhotoSwipeLightbox from '/photoswipe/dist/photoswipe-lightbox.esm.js';
     import PhotoSwipeVideoPlugin from '/photoswipe/dist/photoswipe-video-plugin.esm.js';
+    // import JSZip from '/jszip/dist/jszip.min.js';
+
 
     let pswp = null; // photoswipe instance, it is non-null if open
     let lastTimeoutId = null; // used to log to user with a timeout
@@ -162,8 +179,9 @@
         const itemHtml = `<div class="custom-html-slide">${file.name}</div>`; // fallback if file can't be displayed
         const fileType = file['type'];
         // load image
+        const urlObj = URL.createObjectURL(file);
+
         if (fileType.includes("image")) {
-            const urlObj = URL.createObjectURL(file);
             item.src = urlObj;
             let img = new Image();
             img.onload = function () {
@@ -175,7 +193,6 @@
         }
         // load video (takes long)
         else if (fileType.includes("video")) {
-            const urlObj = URL.createObjectURL(file);
             let video = document.createElement("video");
             video.addEventListener("loadeddata", function () {
                 if (video.videoWidth === 0 || video.videoHeight === 0) {
@@ -376,6 +393,7 @@
         let footerKeybindingDiv = document.getElementById("footer-keybindings")
         footerKeybindingDiv.innerHTML = ""
         document.getElementById("sort-footer").style.visibility = "hidden"
+        loadSortingExport()
     }
 
     function getMappedFolder(filename) {
@@ -440,13 +458,14 @@
     }
 
     function handleUploadedFiles(fileObjects) {
-
         openSection("keybinding-section")
         openSection("sort-section")
         let uploadedFileObjects = Array.from(fileObjects);
         naturalSortFileObjects(uploadedFileObjects)
         let uploadedFilenames = uploadedFileObjects.map(fileObject => fileObject.name)
         localStorage.setUploads(uploadedFilenames)
+        let uploadedFileUrls = uploadedFileObjects.map(fileObject => URL.createObjectURL(fileObject))
+        localStorage.setUploadUrls(uploadedFileUrls)
         displayUploadInformation()
         logToUser(`Loading ${uploadedFileObjects.length} items...`);
         let options = loadGalleryArguments(uploadedFileObjects);
@@ -658,6 +677,7 @@
         }
         localStorage.setMappings({})
         displayUploadInformation()
+        loadSortingExport()
     }
 
     function downloadTextAsFile(filename, text) {
@@ -702,6 +722,49 @@
         return applyFileContent
     }
 
+    async function blobUrlToBlob(url){
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const blob = await response.blob();
+            return blob;
+        } catch (error) {
+            console.log('Error converting URL to Blob:', error);
+            return null;
+        }
+    }
+
+
+    async function exportZip(){
+        console.log("Download zip...")
+
+        let zip = new JSZip();
+        let mappings = localStorage.getMappings()
+        let mappingKeys = Object.keys(mappings)
+        let uploads = localStorage.getUploads()
+        let uploadUrls = localStorage.getUploadUrls()
+
+        for (let mappingKey of mappingKeys) {
+            let index = uploads.indexOf(mappingKey)
+            if (index < 0){
+                console.log(`Mapped item was not uploaded: ${mappingKey}`)
+                continue
+            }
+            let url = uploadUrls[index]
+            let blob = await blobUrlToBlob(url)
+            let folder = mappings[mappingKey]
+            console.log(`${folder}/${mappingKey}`)
+
+            zip.file(`${folder}/${mappingKey}`, blob, {binary: true})
+        }
+        zip.generateAsync({type: "blob"}).then(function (zip) {
+            saveAs(zip, "sorted.zip");
+        }, function (err) {
+            logToUser("Error generating .zip file.")
+        });
+    }
 
     function setupListeners() {
         // file uploader
@@ -767,22 +830,10 @@
         let clearStorageButton = document.getElementById("clear-storage-button")
         clearStorageButton.addEventListener("click", () => clearStorage())
 
-        //sort export buttons
-        let linuxApplyButton = document.getElementById("download-linux-sort")
-        linuxApplyButton.addEventListener("click", () => {
-            downloadTextAsFile("apply-sorting.sh", `#!/bin/bash\n${getApplyCommands()}`)
-        })
-        let linuxUndoButton = document.getElementById("download-linux-undo-sort")
-        linuxUndoButton.addEventListener("click", () => {
-            downloadTextAsFile("undo-sorting.sh", `#!/bin/bash\n${getUndoCommands()}`)
-        })
-        let windowsApplyButton = document.getElementById("download-windows-sort")
-        windowsApplyButton.addEventListener("click", () => {
-            downloadTextAsFile("apply-sorting.bat", `${getApplyCommands("move", "\\")}`)
-        })
-        let windowsUndoButton = document.getElementById("download-windows-undo-sort")
-        windowsUndoButton.addEventListener("click", () => {
-            downloadTextAsFile("undo-sorting.bat", `\n${getUndoCommands("move", "\\")}`)
+        //zip download
+        let zipDownload = document.getElementById("download-universal-sort")
+        zipDownload.addEventListener("click", async event => {
+            await exportZip()
         })
     }
 
@@ -823,12 +874,20 @@
         Storage.prototype.setIndex = function (index) {
             return localStorage.setItem("index", index)
         }
-        // uploads: an array of file objects from the upload form, so each file object has a name, mime type, etc
+        // uploads: an array of filenames of the uploaded files
         Storage.prototype.getUploads = function () {
             return localStorage.getObject("uploads") || []
         }
         Storage.prototype.setUploads = function (uploads) {
             return localStorage.setObject("uploads", uploads)
+        }
+
+        // file url uploads: an array of urls to the uploaded files
+        Storage.prototype.getUploadUrls = function () {
+            return localStorage.getObject("upload-urls") || []
+        }
+        Storage.prototype.setUploadUrls = function (uploadsUrls) {
+            return localStorage.setObject("upload-urls", uploadsUrls)
         }
 
         // boolean storage, used for section state memory
@@ -842,24 +901,44 @@
         Storage.prototype.toggleBoolean = function (key) {
             this.setBoolean(key, !this.getBoolean(key))
         }
-
     }
 
-    function setExampleKeybindingsOnFirstVisit() {
-        if (localStorage.getObject("keybindings") === null) {
-            localStorage.setKeybindings(getExampleKeybindings())
+    function handleFirstVisit() {
+        if (localStorage.getObject("keybindings") !== null) {
+            console.log("You have visited this page earlier.")
+            return;
+        }
+        console.log("Setting defaults for first visit.")
+
+        // example keybindings
+        localStorage.setKeybindings(getExampleKeybindings())
+
+        // open export section for platform
+        let platform = window.navigator.platform
+        if (platform.toLowerCase().includes("win")) {
+            openSection("apply-sort-section-windows")
+            closeSection("apply-sort-section-linux")
+        }
+        else {
+            openSection("apply-sort-section-linux")
+            closeSection("apply-sort-section-windows")
         }
     }
 
     function showUserPreviousUploads() {
         let previousUploadInfo = document.getElementById("previous-upload-info")
         let uploadedFilenames = localStorage.getUploads()
+        if (uploadedFilenames.length < 1) {
+            return;
+        }
         let mappedFilenames = Object.keys(localStorage.getMappings())
         let mappingsThatWorkOnThisUpload = mappedFilenames.filter(filename => uploadedFilenames.includes(filename))
-        let msg = `Last visit, you've uploaded ${uploadedFilenames.length} files,
-         of which ${mappingsThatWorkOnThisUpload.length} are sorted. <i>Upload them again</i> to continue sorting.`
-        // logToUser(msg, 6000)
-        previousUploadInfo.innerHTML = msg
+        let p1 = `Previous time, you:<ul>`
+        let p2 = `<li>Uploaded ${uploadedFilenames.length} files</li>`
+        let p3 = `<li>Sorted ${mappingsThatWorkOnThisUpload.length} files</li>`
+        let p4 = `</ul>`
+        let p5 = `Reupload if you want to continue.`
+        previousUploadInfo.innerHTML = p1 + p2 + p3 + p4 + p5
     }
 
     function openSection(sectionName) {
@@ -869,6 +948,7 @@
         sectionContent.style.display = "block"
         sectionButton.style.transform = "rotate(90deg)"
         sectionContent.style.animation = "fadeIn 0.5s ease-out"
+        localStorage.setBoolean(sectionName, true)
     }
 
     function closeSection(sectionName) {
@@ -877,21 +957,23 @@
         let sectionContent = section.querySelectorAll("div")[1]
         sectionContent.style.display = "none"
         sectionButton.style.transform = "rotate(0deg)"
+        localStorage.setBoolean(sectionName, false)
     }
 
     function applySectionStateFromStorage(sectionName) {
         let isOpen = localStorage.getBoolean(sectionName)
         if (isOpen) {
-            closeSection(sectionName)
+            openSection(sectionName)
         }
         else {
-            openSection(sectionName)
+            closeSection(sectionName)
         }
     }
 
     function setupSection(sectionName) {
         let section = document.getElementById(sectionName)
         let sectionButton = section.querySelector("img")
+        sectionButton = section.querySelector("div")
         sectionButton.addEventListener("click", () => {
             localStorage.toggleBoolean(sectionName)
             applySectionStateFromStorage(sectionName)
@@ -905,14 +987,84 @@
         sections.forEach(section => {
             setupSection(section.id)
         })
-        // setupSection("upload-section")
+        //always open upload section on refresh, because uploads are always gone
+        openSection("upload-section")
+    }
+
+    function getExportSectionContent(commands, filename, step2 = "sort") {
+        let container = document.createElement("div")
+
+        //content
+        let contentDisplay = document.createElement("pre")
+        let content = `#1: open terminal in folder with uploaded files\n`
+        content += `#2: paste these commands in to ${step2}\n\n`
+        content += commands
+        contentDisplay.innerHTML += content
+        container.appendChild(contentDisplay)
+
+        //copy button
+        let copyButton = document.createElement("button")
+        copyButton.classList.add("link-button", "link-button-inverse")
+        copyButton.textContent = "Copy"
+        copyButton.addEventListener("click", event => {
+            navigator.clipboard.writeText(content);
+            copyButton.textContent = "Copied!"
+            copyButton.classList.remove("link-button-inverse")
+            setTimeout(function () {
+                copyButton.classList.add("link-button-inverse");
+                copyButton.textContent = "Copy"
+            }, 2000);
+        })
+        container.appendChild(copyButton)
+
+        //download button
+        let downloadButton = document.createElement("button")
+        downloadButton.classList.add("link-button", "link-button-inverse")
+        downloadButton.textContent = "Download"
+        downloadButton.addEventListener("click", event => {
+            downloadTextAsFile(filename, content)
+        })
+        container.appendChild(downloadButton)
+        return container
+    }
+
+    function loadSortingExport() {
+        let linuxSection = document.getElementById("linux-export")
+        linuxSection.innerHTML = ""
+        let linuxApplyDiv = getExportSectionContent(getApplyCommands(), "apply.sh", "sort")
+        let title = document.createElement("h5")
+        title.textContent = "Sort"
+        linuxSection.appendChild(title)
+        linuxSection.appendChild(document.createElement("h1"))
+        linuxSection.appendChild(linuxApplyDiv)
+        let linuxUndoDiv = getExportSectionContent(getUndoCommands(), "undo.sh", "undo sort")
+        title = document.createElement("h5")
+        title.textContent = "Undo sort"
+        linuxSection.appendChild(title)
+        linuxSection.appendChild(linuxUndoDiv)
+
+        //windows
+        let windowsSection = document.getElementById("windows-export")
+        windowsSection.innerHTML = ""
+        let windowsApplyDiv = getExportSectionContent(getApplyCommands("move", "\\"), "apply.bat", "sort")
+        title = document.createElement("h5")
+        title.textContent = "Sort"
+        windowsSection.appendChild(title)
+        windowsSection.appendChild(document.createElement("h1"))
+        windowsSection.appendChild(windowsApplyDiv)
+        let windowsUndoDiv = getExportSectionContent(getUndoCommands("move", "\\"), "undo.bat", "undo sort")
+        title = document.createElement("h5")
+        title.textContent = "Undo sort"
+        windowsSection.appendChild(title)
+        windowsSection.appendChild(windowsUndoDiv)
     }
 
     function onLoad() {
         setupLocalStorageBindings()
         showUserPreviousUploads()
-        setExampleKeybindingsOnFirstVisit()
+        handleFirstVisit()
         loadKeybindingTable()
+        loadSortingExport()
         setupSections()
         setupListeners()
     }

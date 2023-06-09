@@ -100,8 +100,9 @@ body, html {
     padding: 7px 10px;
     text-align: center;
     display: inline-block;
-    margin-right: 5px;
+    /*margin-right: 5px;*/
     cursor: pointer;
+    margin: 0.5em;
 }
 
 .link-button-red {
@@ -202,6 +203,7 @@ body, html {
 }
 
 .flex-table-small-cell {
+    text-align: center;
     flex: 1;
 }
 .flex-table-small-cell:first-child {
@@ -292,13 +294,12 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    cursor: pointer;
 }
 
 .c-section-button {
     transition: transform 200ms ease;
     margin-right: 1em;
-
-    cursor: pointer;
 }
 
 .c-section-title {
