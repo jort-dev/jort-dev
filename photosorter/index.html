@@ -45,6 +45,7 @@
                 <br>
                 <div id="upload-info"></div>
                 <div id="previous-upload-info"></div>
+
             </div>
         </section>
 
@@ -58,15 +59,16 @@
                 Enter the names of the folders to sort to.
                 <div class="flex-table" id="keybindings-table">
                     <div class="flex-table-row flex-table-first-row">
-                        <div class="flex-table-cell flex-table-small-cell">Hotkey</div>
+                        <div class="flex-table-cell flex-table-small-cell">🔑</div>
                         <div class="flex-table-cell flex-table-big-cell">Folder</div>
                         <!--hehe-->
                         <button class="flex-table-cell flex-table-small-cell invisible-button"
                                 id="add-keybinding-button"><span
-                                style="color: transparent;  text-shadow: 0 0 0 green; transform: rotate(45deg); display: inline-block">❌</span>
+                                style="color: transparent;  text-shadow: 0 0 0 var(--theme-color-green); transform: rotate(45deg); display: inline-block">❌</span>
                         </button>
                     </div>
                 </div>
+                Optionally, add hotkeys to sort quickly to that folder.
             </div>
         </section>
 
@@ -76,8 +78,12 @@
                 <h2 class="c-section-title">3: Sort</h2>
             </div>
             <div class="c-section-content">
+                <div class="progress-bar" id="upload-progress">
+                    <div class="progress"></div>
+                    <div class="progress-text">Upload progress bar</div>
+                </div>
                 Click to open the gallery to start sorting!<br>
-                <button class="link-button" id="open-gallery-button" style="visibility: hidden">Start sorting</button>
+                <button class="link-button link-button-inverse" id="open-gallery-button">Start sorting</button>
             </div>
         </section>
 
@@ -85,55 +91,62 @@
             <div class="c-section-title-row">
                 <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
                 <h2 class="c-section-title">4: Apply sorting - Windows</h2>
+
             </div>
             <div class="c-section-content" id="windows-export"></div>
-            <section class="c-section" id="apply-linux">
-                <div class="c-section-title-row">
-                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                    <h2 class="c-section-title">4: Apply sorting - Linux / MacOS</h2>
-                </div>
-                <div class="c-section-content" id="linux-export"></div>
-            </section>
+        </section>
 
-            <section class="c-section" id="apply-universal">
-                <div class="c-section-title-row">
-                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                    <h2 class="c-section-title">4: Download sorting (universal)</h2>
-                </div>
-                <div class="c-section-content">
-                    Download a .zip file with the items sorted.
-                    This is slower and takes more space compared to applying the sort with commands.
-                    The zip will contain all the files you just uploaded.
-                    <br>
-                    <button id="download-universal-sort" class="link-button link-button-inverse">Zip file</button>
-                </div>
-            </section>
+        <section class="c-section" id="apply-linux">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h2 class="c-section-title">4: Apply sorting - Linux / MacOS</h2>
+            </div>
+            <div class="c-section-content" id="linux-export"></div>
+        </section>
 
-            <section class="c-section" id="advanced-options-section">
-                <div class="c-section-title-row">
-                    <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
-                    <h2 class="c-section-title">Advanced options</h2>
+        <section class="c-section" id="apply-universal">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h2 class="c-section-title">4: Download sorting (universal)</h2>
+            </div>
+            <div class="c-section-content">
+                Download a .zip file with the items sorted.
+                This is slower and takes more space compared to applying the sort with commands.
+                The zip will contain all the files you just uploaded.
+                <br>
+                <button id="download-universal-sort" class="link-button link-button-inverse">Zip file</button>
+                <div class="progress-bar" id="zip-progress">
+                    <div class="progress"></div>
+                    <div class="progress-text">Zip progress bar</div>
                 </div>
-                <div class="c-section-content">
-                    <div class="vertical">
-                        <button id="clear-mappings-button">Clear sorts</button>
-                        <button id="example-images-button">Load example images</button>
-                        <button id="example-keybindings-button">Load example keybindings</button>
-                        <button id="clear-storage-button">Clear all website data</button>
-                    </div>
-                </div>
-            </section>
+            </div>
+        </section>
+
+        <section class="c-section" id="advanced-options-section">
+            <div class="c-section-title-row">
+                <img class="c-section-button" src="/img/right.svg" height="20em" alt="Open button">
+                <h2 class="c-section-title">Advanced options</h2>
+            </div>
+            <div class="c-section-content">
+                <button class="link-button link-button-inverse" id="clear-mappings-button">Clear sorts</button>
+                <button class="link-button link-button-inverse" id="example-images-button">Load example images</button>
+                <button class="link-button link-button-inverse" id="example-keybindings-button">Load example
+                    keybindings
+                </button>
+                <button class="link-button link-button-inverse" id="clear-storage-button">Clear all website data
+                </button>
+            </div>
+        </section>
+
+        <div class="footer" id="sort-footer" style="visibility: hidden">
+            <div id="filename-display" style="font-weight: bold">Filename</div>
+            <div id="mapped-folder-display" style="font-style: italic">Unsorted</div>
+            <div class="footer-keybindings" id="footer-keybindings"></div>
+        </div>
 
     </div>
-
-    <div class="footer" id="sort-footer" style="visibility: hidden">
-        <div id="filename-display">Filename</div>
-        <div id="mapped-folder-display"></div>
-        <div class="footer-keybindings" id="footer-keybindings"></div>
-    </div>
-
-
 </div>
+
 
 </body>
 
@@ -151,6 +164,7 @@
     let dragCounter = 0; // file drop: keep count of drag events to identify fake dragleave events
 
     function logToUser(msg, timeout = 3000) {
+        console.log(msg)
         clearTimeout(lastTimeoutId);
         if (timeout > 0) {
             let toastElement = document.getElementById("snackbar");
@@ -167,10 +181,10 @@
     }
 
     function shakeElement(element) {
-        element.classList.add("shake");
+        element.classList.add("shake-jello");
 
         setTimeout(function () {
-            element.classList.remove("shake");
+            element.classList.remove("shake-jello");
         }, 400);
     }
 
@@ -344,7 +358,13 @@
     function showMappingForCurrentItem(folder) {
         //show the user to what folder the current item open in the gallery is mapped to
         let mappedFolderDisplay = document.getElementById("mapped-folder-display")
-        mappedFolderDisplay.textContent = folder
+        if (folder) {
+            mappedFolderDisplay.textContent = folder
+        }
+        else {
+            //because its more neat to inherit visibility from parent, use empty character to prevent jumping
+            mappedFolderDisplay.innerHTML = "&nbsp;"
+        }
 
         let keybindings = localStorage.getKeybindings()
         let keybindingIndex = keybindings.findIndex(keybinding => keybinding.folder === folder);
@@ -353,10 +373,12 @@
         for (let i = 0; i < footerKeybindingsElement.childElementCount; i++) {
             let keybindingElement = footerKeybindingsElement.children[i]
             if (i === keybindingIndex) {
-                keybindingElement.style.backgroundColor = "green"
+                // keybindingElement.style.backgroundColor = "var(--theme-color-green)"
+                keybindingElement.classList.add("footer-keybinding-selected")
             }
             else {
-                keybindingElement.style.backgroundColor = "red"
+                // keybindingElement.style.backgroundColor = "var(--theme-color-red)"
+                keybindingElement.classList.remove("footer-keybinding-selected")
             }
         }
 
@@ -385,6 +407,7 @@
         //pswp instance not available after lightbox.init()
         pswp = lightbox.pswp // fill the gallery instance variable for other functions to use and know gallery is open
         loadAndShowSortingFooter();
+        zipToExport = null; //clear previously downloaded zip as new sorts will probably be created
     }
 
     function galleryClosedListener() {
@@ -393,6 +416,7 @@
         let footerKeybindingDiv = document.getElementById("footer-keybindings")
         footerKeybindingDiv.innerHTML = ""
         document.getElementById("sort-footer").style.visibility = "hidden"
+        displayUploadInformation()
         loadSortingExport()
     }
 
@@ -433,11 +457,11 @@
         });
         lightbox.init();
         let openGalleryButton = document.getElementById("open-gallery-button");
-        openGalleryButton.onclick = () => {
+        openGalleryButton.onclick = () => { //overwrite default click event
             let indexToLoad = getIndexByFilename()
             lightbox.loadAndOpen(indexToLoad);
         };
-        openGalleryButton.style.visibility = "visible";
+        openGalleryButton.classList.remove("link-button-inverse")
 
     }
 
@@ -467,7 +491,6 @@
         let uploadedFileUrls = uploadedFileObjects.map(fileObject => URL.createObjectURL(fileObject))
         localStorage.setUploadUrls(uploadedFileUrls)
         displayUploadInformation()
-        logToUser(`Loading ${uploadedFileObjects.length} items...`);
         let options = loadGalleryArguments(uploadedFileObjects);
 
         //wait for gallery arguments to have all the dimensions before showing open button
@@ -475,12 +498,11 @@
         const condition = () => {
             //loadedCount is incremented in the listeners created in the loader function
             // not sure if concurrency might be a problem in the future
-            logToUser(`Loaded ${loadedCount} / ${uploadedFileObjects.length}`, -1);
+            updateProgressBar(loadedCount, uploadedFileObjects.length, "Gallery loaded!", "upload-progress")
             return loadedCount >= uploadedFileObjects.length;
         }
         pollUntilTrue(condition, 200, 60000)
             .then((result) => {
-                logToUser("Loaded items!") // clear progress bar
                 initGallery(options)
             })
             .catch((error) => {
@@ -541,19 +563,27 @@
 
         const hotkeyInput = document.createElement('button');
         hotkeyInput.classList.add('invisible-button');
-        hotkeyInput.title = "Change key"
+        hotkeyInput.title = "Change hotkey"
         hotkeyInput.classList.add('flex-table-cell');
         hotkeyInput.classList.add('flex-table-small-cell');
         hotkeyInput.textContent = keybinding.key;
         hotkeyInput.addEventListener("click", () => {
             console.log(`Waiting for user to press key to bind to folder '${keybinding.folder}'...`)
+            if (hotkeyInput.textContent === "👂") {
+                //cancel keybind if button is clicked again by simulating escape press (hack)
+                document.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Escape'}));
+                hotkeyInput.textContent = keybinding.key;
+                return;
+            }
             hotkeyInput.textContent = "👂"
+
             document.addEventListener("keydown", event => {
                 if (event.key === "Escape") {
                     console.log("Bind cancelled.")
                     hotkeyInput.textContent = keybinding.key;
                     return;
                 }
+
                 hotkeyInput.textContent = event.key
                 keybinding.key = event.key
                 updateKeybinding(keybinding);
@@ -598,6 +628,8 @@
         if (keybindings.length === 0) {
             return;
         }
+        // let keybindingTable = document.getElementById("keybindings-table")
+        // appendToKeybindingTable({key: "hoi", folder: "haha"})
         keybindings.forEach(keybinding => {
             appendToKeybindingTable(keybinding)
         })
@@ -722,7 +754,7 @@
         return applyFileContent
     }
 
-    async function blobUrlToBlob(url){
+    async function blobUrlToBlob(url) {
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -736,30 +768,64 @@
         }
     }
 
+    function updateProgressBar(currentIndex, totalIndex, resolveMessage, id) {
+        let container = document.getElementById(id)
+        container.style.display = "block"
+        let progressEl = container.children[0]
+        let textEl = container.children[1]
+        let progress = (currentIndex / totalIndex) * 100;
+        // let progressText = progress.toFixed(2) + '%';
 
-    async function exportZip(){
-        console.log("Download zip...")
+        progressEl.style.width = Math.min(progress, 100) + '%'; //visual display of progress
+        textEl.textContent = `${currentIndex}/${totalIndex}` //textual display of progress
 
-        let zip = new JSZip();
+        if (currentIndex >= totalIndex) {
+            textEl.innerText = resolveMessage;
+        }
+    }
+
+    let zipToExport = null; //store export zip in global variable, for fast redownload
+    async function exportZip() {
+        if (zipToExport) {
+            console.log("Downloading previously generated zip")
+            saveAs(zipToExport, "sorted.zip");
+            return
+        }
+        console.log("Generating zip...")
+
         let mappings = localStorage.getMappings()
         let mappingKeys = Object.keys(mappings)
         let uploads = localStorage.getUploads()
         let uploadUrls = localStorage.getUploadUrls()
+        if (uploadUrls.length < 1) {
+            logToUser("No files uploaded")
+            return;
+        }
 
-        for (let mappingKey of mappingKeys) {
-            let index = uploads.indexOf(mappingKey)
-            if (index < 0){
-                console.log(`Mapped item was not uploaded: ${mappingKey}`)
-                continue
-            }
+        // let totalIndex = map;
+        let resolveMessage = 'Creating download...';
+        let progressBarId = "zip-progress"
+        let totalIndex = uploads.length
+
+        let index = 0
+        zipToExport = new JSZip();
+        for (let upload of uploads) {
             let url = uploadUrls[index]
             let blob = await blobUrlToBlob(url)
-            let folder = mappings[mappingKey]
-            console.log(`${folder}/${mappingKey}`)
-
-            zip.file(`${folder}/${mappingKey}`, blob, {binary: true})
+            let folder = mappings[upload]
+            updateProgressBar(++index, totalIndex, resolveMessage, progressBarId)
+            if (folder) {
+                console.log(`${index}: saving ${folder}/${upload}`)
+                zipToExport.file(`${folder}/${upload}`, blob, {binary: true})
+            }
+            else {
+                // store unsorted items in root of zip
+                console.log(`${index}: saving unsorted ${upload} in root folder`)
+                zipToExport.file(upload, blob, {binary: true})
+            }
         }
-        zip.generateAsync({type: "blob"}).then(function (zip) {
+        zipToExport.generateAsync({type: "blob"}).then(function (zip) {
+            zipToExport = zip
             saveAs(zip, "sorted.zip");
         }, function (err) {
             logToUser("Error generating .zip file.")
@@ -767,6 +833,12 @@
     }
 
     function setupListeners() {
+        //gallery opener, default action
+        let galleryButton = document.getElementById("open-gallery-button")
+        galleryButton.onclick = () => {
+            logToUser("No files uploaded")
+        }
+
         // file uploader
         let fileInput = document.getElementById("file-upload");
         fileInput.addEventListener("change", (event) => {
@@ -901,6 +973,7 @@
         Storage.prototype.toggleBoolean = function (key) {
             this.setBoolean(key, !this.getBoolean(key))
         }
+
     }
 
     function handleFirstVisit() {
@@ -938,6 +1011,7 @@
         let p3 = `<li>Sorted ${mappingsThatWorkOnThisUpload.length} files</li>`
         let p4 = `</ul>`
         let p5 = `Reupload if you want to continue.`
+        // let p6 = `<br>Everything except files are immediately saved in your browser.`
         previousUploadInfo.innerHTML = p1 + p2 + p3 + p4 + p5
     }
 
@@ -1061,6 +1135,7 @@
 
     function onLoad() {
         setupLocalStorageBindings()
+        localStorage.setUploadUrls([]) // always clear upload urls, as they cannot persist
         showUserPreviousUploads()
         handleFirstVisit()
         loadKeybindingTable()
