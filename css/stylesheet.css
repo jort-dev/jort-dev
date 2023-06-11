@@ -1,17 +1,18 @@
 :root {
 
-    /*--theme-color: #388e3c;*/
-    --theme-color: #0F9D58;
+    --theme-color: #388e3c;
+    /*--theme-color: #0F9D58;*/
     --alt-theme-color: #1b5e20;
     --background-color: white;
 
-    --theme-color-green: #0F9D58;
+    --theme-color-green: #388e3c;
+    /*--theme-color-green: #0F9D58;*/
     --theme-color-yellow: #F4B400;
     --theme-color-red: #DB4437;
     --theme-color-blue: #4285F4;
     --theme-color-grey: #9e9e9e;
     --theme-color-light-grey: lightgrey;
-    --shake-distance: 0.5em;
+    --shake-distance: 0.5rem;
 }
 
 html {
@@ -30,7 +31,7 @@ body, html {
     display: grid;
     place-items: center;
     height: 100vh;
-    padding: 0px 10px 0px 10px; /*prevent text to touch border on smaller screens*/
+    padding: 0 10px 0 10px; /*prevent text to touch border on smaller screens*/
     /*min-width: 30%;*/
 }
 
@@ -39,7 +40,7 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0px 10px 0px 10px;
+    padding: 0 10px 0 10px;
 }
 
 /*items in this container will be put horizontal, aligning left*/
@@ -52,14 +53,23 @@ body, html {
 .center-child {
     /*in chrome mobile, makes page take up whole space*/
     min-width: 90vw;
+    /*also setting this width somehow prevents the unreachable left side problem induced by indented class*/
+    width: 90vw;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 50rem) {
     .center-child {
         /*prevents some page jumping when collapsing items*/
-        min-width: 30vw;
-        max-width: 30vw;
+        min-width: 30rem;
+        max-width: 30rem;
+
     }
+
+    /*!*prevent left side unreachable on mobile*!*/
+    /*html {*/
+    /*    overflow-x: auto; !* Add horizontal scroll when needed *!*/
+    /*    width: auto; !* Allow the content to grow beyond the window width *!*/
+    /*}*/
 }
 
 
@@ -79,8 +89,8 @@ body, html {
 
 /*subtitle under h1 header*/
 .subtitle {
-    font-size: 12px;
-    margin-top: -20px;
+    font-size: 0.8rem;
+    margin-top: -1.5rem;
     font-style: italic;
 
 }
@@ -99,12 +109,12 @@ body, html {
 
 /*button with a link*/
 .link-button {
-    border: 2px solid var(--theme-color);
+    border: 0.15rem solid var(--theme-color);
     background-color: var(--theme-color);
     color: var(--background-color);
     text-decoration: none;
     font-weight: bold;
-    padding: 7px 10px;
+    padding: 0.4rem 0.5rem;
     text-align: center;
     display: inline-block;
     /*margin-right: 5px;*/
@@ -113,7 +123,7 @@ body, html {
 }
 
 .link-button-red {
-    border: 2px solid var(--theme-color-red);
+    border: 0.1rem solid var(--theme-color-red);
     background-color: var(--theme-color-red);
 }
 
@@ -128,22 +138,22 @@ body, html {
 
 .invisible-button:hover {
     /*box shadow is basically a border which does not move adjoining elements*/
-    box-shadow: 0 0 0 1px lightgrey;
+    box-shadow: 0 0 0 0.05rem lightgrey;
 }
 
 .c-section-button:hover {
-    box-shadow: 0 0 0 1px lightgrey;
+    box-shadow: 0 0 0 0.05rem lightgrey;
 }
 
 .neutral-button {
-    border: 2px solid var(--grey-theme-color);
+    border: 0.1rem solid var(--grey-theme-color);
     background-color: var(--background-color);
     text-decoration: none;
     font-weight: bold;
-    padding: 7px 10px;
+    padding: 0.5rem 0.6rem;
     text-align: center;
     display: inline-block;
-    margin-right: 5px;
+    margin-right: 0.5rem;
     cursor: pointer;
 }
 
@@ -164,17 +174,17 @@ body, html {
 }
 
 .upload-btn {
-    border: 2px solid var(--theme-color);
+    border: 0.1rem solid var(--theme-color);
     color: var(--theme-color);
     background-color: var(--background-color);
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-size: 20px;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
 .upload-btn-wrapper input[type=file] {
-    font-size: 100px;
+    font-size: 10rem;
     position: absolute;
     left: 0;
     top: 0;
@@ -186,25 +196,25 @@ body, html {
 .flex-table {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 0.8rem;
 }
 
 .flex-table-row {
     display: flex;
     align-items: center;
-    margin: 5px 0 5px 0;
+    margin: 0.5rem 0 0.5rem 0;
 }
 
 .flex-table-first-row {
     font-weight: bold;
-    border-bottom: 2px solid black;
-    padding-bottom: 5px;
+    border-bottom: 0.2rem solid black;
+    padding-bottom: 0.4rem;
 }
 
 .flex-table-cell {
     flex: 1;
-    margin-right: 10px;
-    padding: 5px;
+    margin-right: 0.6rem;
+    padding: 0.3rem;
 }
 
 .flex-table-big-cell {
@@ -218,11 +228,11 @@ body, html {
 }
 
 .flex-table-small-cell:first-child {
-    border-right: 2px solid black;
+    border-right: 0.15rem solid black;
 }
 
 .flex-table-small-cell:last-child {
-    border-left: 2px solid black;
+    border-left: 0.15rem solid black;
 
 }
 
@@ -230,12 +240,16 @@ body, html {
 /*keybindings*/
 .footer-keybindings {
     display: flex;
+    white-space: nowrap;
+    /*if i hide overflow the buttons center instead of cut off*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
 }
 
 .footer-keybinding {
     display: flex;
-    margin: 10px;
-    border: 2px solid black;
+    margin: 0.6rem;
+    border: 0.1rem solid black;
     font-family: monospace;
     background-color: var(--theme-color-light-grey);
     cursor: pointer;
@@ -244,6 +258,7 @@ body, html {
 .footer-keybinding > div {
     background-color: var(--background-color);
 }
+
 .footer-keybinding-selected {
     background-color: var(--theme-color-green);
 }
@@ -253,17 +268,17 @@ body, html {
 }
 
 .footer-keybinding-key {
-    margin: 5px;
-    border: 2px solid black;
-    padding: 0 4px 0 4px;
+    margin: 0.4rem;
+    border: 0.1rem solid black;
+    padding: 0 0.2rem 0 0.2rem;
     background-color: var(--background-color);
     font-weight: bold;
 }
 
 .footer-keybinding-folder {
-    margin: 5px;
-    border: 2px solid black;
-    padding: 0 4px 0 4px;
+    margin: 0.3rem;
+    border: 0.1rem solid black;
+    padding: 0 0.2rem 0 0.2rem;
     background-color: var(--background-color);
 }
 
@@ -359,13 +374,13 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 0.6rem;
     cursor: pointer;
 }
 
 .c-section-button {
     transition: transform 200ms ease;
-    margin-right: 1em;
+    margin-right: 1rem;
 }
 
 .c-section-title {
@@ -390,12 +405,12 @@ body, html {
 
 /*photoswipe slide markup for items which cannot be displayed*/
 .custom-html-slide {
-    font-size: 40px;
-    line-height: 45px;
-    max-width: 400px;
+    font-size: 3rem;
+    line-height: 3rem;
+    max-width: 25rem;
     width: 100%;
-    padding: 0 20px;
-    margin: 50px auto 0;
+    padding: 0 1.5rem;
+    margin: 5rem auto 0;
     color: #fff;
 }
 
@@ -407,7 +422,7 @@ body, html {
     right: 0;
     bottom: 0;
     height: 10vh;
-    z-index: 10000000000000;
+    z-index: 888888; /* what the hell is the z index of photoswipe */
     display: grid;
     place-items: center;
 }
@@ -432,27 +447,28 @@ body, html {
 }
 
 #drag-text {
-    font-size: 24px;
+    font-size: 2rem;
     color: #fff;
     background-color: #333;
-    padding: 20px;
-    border-radius: 5px;
+    padding: 1.4rem;
+    border-radius: 0.2rem;
 }
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
-    min-width: 250px; /* Set a default minimum width */
-    margin-left: -125px; /* Divide value of min-width by 2 */
+    min-width: 10rem; /* Set a default minimum width */
+    margin-left: -5rem; /* Divide value of min-width by 2 */
     background-color: #333; /* Black background color */
     color: #fff; /* White text color */
     text-align: center; /* Centered text */
-    border-radius: 2px; /* Rounded borders */
-    padding: 16px; /* Padding */
+    border-radius: 0.1rem; /* Rounded borders */
+    padding: 1rem; /* Padding */
     position: fixed; /* Sit on top of the screen */
-    z-index: 1; /* Add a z-index if needed */
+    /*z-index: 10000000; !* Add a z-index if needed *!*/
+    z-index: 999999;
     left: 50%; /* Center the snackbar */
-    bottom: 30px; /* 30px from the bottom */
+    bottom: 2rem; /* 30px from the bottom */
 }
 
 @keyframes fadein {
@@ -461,14 +477,14 @@ body, html {
         opacity: 0;
     }
     to {
-        bottom: 30px;
+        bottom: 2rem;
         opacity: 1;
     }
 }
 
 @keyframes fadeout {
     from {
-        bottom: 30px;
+        bottom: 2rem;
         opacity: 1;
     }
     to {
@@ -479,9 +495,9 @@ body, html {
 
 /*progress bar*/
 .progress-bar {
-    width: 20em;
-    height: 1.8em;
-    border: 2px solid lightgrey;
+    width: 20rem;
+    height: 1.8rem;
+    border: 0.1rem solid lightgrey;
     position: relative;
     border-radius: 1000px;
     display: none;
@@ -503,3 +519,52 @@ body, html {
     font-weight: bold;
 }
 
+.indented {
+    margin-left: 3rem;
+    position: relative;
+}
+
+.indented::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -3rem;
+    width: 3rem;
+    height: 100%;
+    background-color: transparent;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+.spinner {
+    animation: spin 3s infinite linear;
+    display: inline-block;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.floater {
+    animation: float 3s infinite ease-in-out; /* Animation properties */
+    display: inline-block;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0); /* Start position */
+    }
+    50% {
+        transform: translateY(-0.2rem); /* Mid position (upward movement) */
+    }
+    100% {
+        transform: translateY(0); /* End position (return to original position) */
+    }
+}
