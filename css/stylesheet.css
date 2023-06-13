@@ -87,7 +87,7 @@ body, html {
     color: grey;
 }
 
-.title{
+.title {
     font-size: 3em;
     font-style: italic;
 }
@@ -106,12 +106,13 @@ body, html {
     text-decoration: none;
     cursor: pointer;
 }
+
 /*when a link is hovered*/
 .link:hover {
     text-decoration: underline;
 }
 
-.hidden-link{
+.hidden-link {
     text-decoration: none;
     color: inherit;
     cursor: pointer;
@@ -328,6 +329,20 @@ body, html {
     flex-direction: column;
 }
 
+.title-big{
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+.title-medium{
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.title-small{
+    font-size: 1rem;
+    font-weight: bold;
+}
+
 /*hold the title and the collapse image button*/
 .c-section-title-row {
     display: flex;
@@ -340,6 +355,7 @@ body, html {
 .c-section-button {
     transition: transform 200ms ease;
     margin-right: 1rem;
+    font-size: 1.0em; /*em, i want to inherit the font size from the title row*/
 }
 
 .c-section-title {
@@ -591,3 +607,4 @@ pre {
         transform: translateY(0); /* End position (return to original position) */
     }
 }
+
