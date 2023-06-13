@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/stylesheet.css">
     <link rel="stylesheet" href="/photoswipe/dist/photoswipe.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
+    <base target="_blank">
     <style>
     </style>
 </head>
@@ -128,12 +129,12 @@
                     <div class="c-section-content indented">
                         Download a .zip file with your sorted items.
                         <br>
-                        <button id="download-universal-sort" class="link-button link-button-inverse">Download .zip
-                        </button>
                         <div class="progress-bar" id="zip-progress">
                             <div class="progress"></div>
                             <div class="progress-text">Zip progress bar</div>
                         </div>
+                        <button id="download-universal-sort" class="link-button link-button-inverse">Download .zip
+                        </button>
                         <br>
                         This is slower and takes more space compared to applying the sort with commands.<br>
                         The zip will contain all the files you just uploaded.
@@ -179,7 +180,7 @@
                         <img class="c-section-button" src="/img/right.svg" height="15em" alt="Open button">
                         <h3 class="c-section-title">About</h3>
                     </div>
-                    <div class="c-section-content">
+                    <div class="c-section-content indented">
                         Developed by <a class="link" href="https://t.me/JortDeveloper">Jort</a>.
                         <br>
                         GitHub: <a class="link" href="https://github.com/jort-dev/snapsort">Snapsort</a>.
@@ -204,8 +205,9 @@
                         If you have more money than you need,
                         and appreciate this tool, a donation would really excite me!
                         <ul>
-                            <li>BTC: <code>bc1q8q9pt8c5uz92t7r0ltjmzzft9eulvey5cqghxx</code></li>
-                            <li>Paypal: <form action="https://www.paypal.com/donate" method="post" target="_blank" style="display: inline;">
+                            <li>BTC: <code style="word-wrap: break-word">bc1q8q9pt8c5uz92t7r0ltjmzzft9eulvey5cqghxx</code></li>
+                            <li>Paypal:
+                                <form action="https://www.paypal.com/donate" method="post" >
                                 <input type="hidden" name="hosted_button_id" value="Y7XZETS3RPWW6"/>
                                 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"
                                        border="0" name="submit" title="PayPal - Donate to this dude"
@@ -214,7 +216,7 @@
                                      height="1"/>
                             </form>
                             </li>
-                            <li>Ko-fi: <a href="https://ko-fi.com/jort_dev" class="link" target="_blank">Donate a 'coffee'</a></li>
+                            <li>Ko-fi: <br><a href="https://ko-fi.com/jort_dev" class="link">Donate a 'coffee'</a></li>
                         </ul>
                     </div>
                 </section>
