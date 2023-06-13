@@ -87,10 +87,15 @@ body, html {
     color: grey;
 }
 
+.title{
+    font-size: 3em;
+    font-style: italic;
+}
+
 /*subtitle under h1 header*/
 .subtitle {
     font-size: 0.8rem;
-    margin-top: -1.5rem;
+    margin-top: -2rem;
     font-style: italic;
 
 }
@@ -101,11 +106,17 @@ body, html {
     text-decoration: none;
     cursor: pointer;
 }
-
 /*when a link is hovered*/
 .link:hover {
     text-decoration: underline;
 }
+
+.hidden-link{
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 
 /*button with a link*/
 .link-button {
@@ -120,6 +131,7 @@ body, html {
     /*margin-right: 5px;*/
     cursor: pointer;
     margin: 0.5em;
+    border-radius: 0.4em;
 }
 
 .link-button-red {
@@ -236,59 +248,6 @@ body, html {
 
 }
 
-
-/*keybindings*/
-.footer-keybindings {
-    display: flex;
-    white-space: nowrap;
-    /*if i hide overflow the buttons center instead of cut off*/
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
-}
-
-.footer-keybinding {
-    display: flex;
-    margin: 0.6rem;
-    border: 0.1rem solid black;
-    font-family: monospace;
-    background-color: var(--theme-color-light-grey);
-    cursor: pointer;
-}
-
-.footer-keybinding > div {
-    background-color: var(--background-color);
-}
-
-.footer-keybinding-selected {
-    background-color: var(--theme-color-green);
-}
-
-.footer-keybinding-selected > div {
-    background-color: var(--theme-color-yellow);
-}
-
-.footer-keybinding-key {
-    margin: 0.4rem;
-    border: 0.1rem solid black;
-    padding: 0 0.2rem 0 0.2rem;
-    background-color: var(--background-color);
-    font-weight: bold;
-}
-
-.footer-keybinding-folder {
-    margin: 0.3rem;
-    border: 0.1rem solid black;
-    padding: 0 0.2rem 0 0.2rem;
-    background-color: var(--background-color);
-}
-
-.selected-footer-keybinding {
-    background-color: var(--theme-color);
-}
-
-.selected-footer-keybinding-item {
-    background-color: greenyellow;
-}
 
 @keyframes jello {
     from, 11.1%, to {
@@ -416,16 +375,79 @@ body, html {
 
 /*footer visible when sorting */
 .footer {
-    background: white;
+    background: var(--background-color);
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 10vh;
+    height: 8rem;
     z-index: 888888; /* what the hell is the z index of photoswipe */
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    /*flex-basis: auto;*/
     place-items: center;
 }
+
+.footer-info-row {
+    height: 1.5rem;
+}
+
+.footer-keybindings {
+    display: flex;
+    white-space: nowrap;
+    flex-wrap: wrap;
+    height: 5rem;
+    /*if i hide overflow the buttons center instead of cut off*/
+    overflow-y: auto;
+}
+
+.footer-keybinding {
+    display: flex;
+    margin: 0.1rem;
+    border: 0.1rem solid black;
+    /*box-shadow: 0 0 0 0.1rem black;*/
+    font-family: monospace;
+    background-color: var(--theme-color-light-grey);
+    cursor: pointer;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.footer-keybinding > div {
+    background-color: var(--background-color);
+    margin: 0.2rem;
+    border: 0.1rem solid black;
+    padding: 0.1rem 0.3rem 0.2rem 0.3rem;
+    /*height conflicts with margin*/
+    height: 1rem;
+}
+
+.footer-keybinding-selected {
+    background-color: var(--theme-color-green);
+}
+
+.footer-keybinding-selected > div {
+    background-color: var(--theme-color-yellow);
+}
+
+.footer-keybinding-key {
+    font-weight: bold;
+}
+
+.footer-keybinding-folder {
+}
+
+.selected-footer-keybinding {
+    background-color: var(--theme-color);
+}
+
+.selected-footer-keybinding-item {
+    background-color: greenyellow;
+}
+
 
 /*drag and drop markup*/
 #drag-target {
@@ -495,7 +517,7 @@ body, html {
 
 /*progress bar*/
 .progress-bar {
-    width: 20rem;
+    width: 15rem;
     height: 1.8rem;
     border: 0.1rem solid lightgrey;
     position: relative;

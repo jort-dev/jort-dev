@@ -16,103 +16,43 @@
     <h1>Experiment</h1>
     <input id="file-upload" type="file" name="myfile" multiple/>
 
-    <div class="progress-bar" id="zip-progress">
-        <div class="progress"></div>
-        <div class="progress-text">Zip progress bar</div>
+</div>
+<div class="footer">
+    <div class="footer-info-row" id="filename-display" style="font-weight: bold">i5elephant2.jpg</div>
+    <div class="footer-info-row" id="mapped-folder-display" style="font-style: italic">elephants</div>
+    <div class="footer-keybindings" id="footer-keybindings">
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">q</div>
+            <div class="footer-keybinding-folder">queens</div>
+        </div>
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">w</div>
+            <div class="footer-keybinding-folder">water-pictures</div>
+        </div>
+        <div class="footer-keybinding footer-keybinding-selected">
+            <div class="footer-keybinding-key">e</div>
+            <div class="footer-keybinding-folder">elephants</div>
+        </div>
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">r</div>
+            <div class="footer-keybinding-folder">rainbows</div>
+        </div>
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">r</div>
+            <div class="footer-keybinding-folder">rainbows</div>
+        </div>
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">r</div>
+            <div class="footer-keybinding-folder">rainbows</div>
+        </div>
+        <div class="footer-keybinding">
+            <div class="footer-keybinding-key">t</div>
+            <div class="footer-keybinding-folder">other</div>
+        </div>
     </div>
-    <button id="but1" class="shake-jello">clicc</button>
-    <div class="shake-jello" style="width: 200px; height: 200px; border: solid"></div>
-    <button id="but2">kloenk</button>
 </div>
 
 <script>
-    async function handleUploadedFiles(files) {
-        files = Array.from(files)
-        for (let file of files) {
-            console.log(file.name)
-            // let existing = await app.loadFromDb(file.name)
-            // console.log(existing)
-            let res = await app.saveToDb(file.name,)
-            console.log(res)
-        }
-    }
-
-
-    function onUploadListener({target}) {
-        if (!target.files || !target.files.length) {
-            logToUser("No files selected.")
-            return;
-        }
-        handleUploadedFiles(target.files)
-    }
-
-    let fileInput = document.getElementById("file-upload");
-    fileInput.addEventListener("change", (event) => {
-        onUploadListener(event)
-    });
-
-    function updateProgressBar(currentIndex, totalIndex, resolveMessage, id) {
-        let container = document.getElementById(id)
-        let progressEl = container.children[0]
-        let textEl = container.children[1]
-        let progress = (currentIndex / totalIndex) * 100;
-        // let progressText = progress.toFixed(2) + '%';
-
-        progressEl.style.width = progress + '%'; //visual display of progress
-        textEl.textContent = `${currentIndex}/${totalIndex}` //textual display of progress
-
-        if (currentIndex === totalIndex) {
-            textEl.innerText = resolveMessage;
-        }
-    }
-
-    function pollUntilTrue(condition, interval, timeout) {
-        return new Promise((resolve, reject) => {
-            const startTime = Date.now();
-            const intervalId = setInterval(() => {
-                const elapsedTime = Date.now() - startTime;
-                if (condition()) {
-                    clearInterval(intervalId);
-                    resolve();
-                }
-                else if (elapsedTime >= timeout) {
-                    clearInterval(intervalId);
-                    reject(new Error(`Timeout of ${timeout}ms reached`));
-                }
-            }, interval);
-        });
-    }
-
-    // Example usage
-    let currentIndex = 3;
-    let totalIndex = 10;
-    let resolveMessage = 'Done!';
-
-    let id = "zip-progress"
-    updateProgressBar(currentIndex, totalIndex, resolveMessage, id);
-    document.getElementById("but1").addEventListener("click", () => {
-        console.log("clicc")
-        updateProgressBar(7, totalIndex, resolveMessage, id);
-    })
-    document.getElementById("but2").addEventListener("click", () => {
-        console.log("kloenk")
-        let loadedCount = 0
-        const condition = () => {
-            //loadedCount is incremented in the listeners created in the loader function
-            // not sure if concurrency might be a problem in the future
-            updateProgressBar(loadedCount, 10, "Gallery loaded!", "zip-progress")
-            loadedCount++
-            return loadedCount >= 10
-        }
-        pollUntilTrue(condition, 200, 60000)
-            .then((result) => {
-                console.log("Loaded items!") // clear progress bar
-            })
-            .catch((error) => {
-                logToUser(error)
-            });
-    })
-
 
 </script>
 

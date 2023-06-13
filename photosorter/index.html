@@ -7,7 +7,7 @@
     <!--    this was not needed before using indented class (margin left)-->
     <!--    <meta name="viewport" content="initial-scale=0.7, width=device-width">-->
     <meta name="viewport" content="initial-scale=1.0, width=device-width">
-    <title>Photosorter</title>
+    <title>Snapsort</title>
     <link rel="stylesheet" href="/css/stylesheet.css">
     <link rel="stylesheet" href="/photoswipe/dist/photoswipe.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
@@ -21,9 +21,9 @@
 <div id="snackbar"></div>
 <div class="center-parent">
     <div class="center-child">
-        <h1>Jorts PhotoSorter</h1>
+        <h1 class="title hidden-link" id="title">Snapsort</h1>
         <p class="subtitle">
-            Sort within your browser!
+            Sort photos within your browser!
         </p>
         <div id="log-bar">
         </div>
@@ -36,14 +36,16 @@
             <div class="c-section-content indented">
                 Upload or drop files to sort.
                 <br>
-
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="folder-upload-btn">Upload folder</button>
+                    <button class="link-button" id="folder-upload-btn">Upload folder</button>
                     <input type="file" id="folder-upload" webkitdirectory directory multiple>
                 </div>
                 <div class="upload-btn-wrapper">
-                    <button class="link-button link-button-inverse" id="upload-btn">Upload files</button>
+                    <button class="link-button" id="upload-btn">Upload files</button>
                     <input id="file-upload" type="file" name="myfile" multiple/>
+                </div>
+                <div class="upload-btn-wrapper">
+                    <button class="link-button link-button-inverse" id="upload-example-button">Load example</button>
                 </div>
                 <br>
                 <div id="upload-info"></div>
@@ -72,6 +74,8 @@
                     </div>
                 </div>
                 Optionally, add hotkeys to sort quickly to that folder.
+                <br>
+                <a class="link" id="example-upload-link">Example</a>
             </div>
         </section>
 
@@ -170,6 +174,51 @@
                     </div>
                 </section>
 
+                <section class="c-section" id="about-section">
+                    <div class="c-section-title-row">
+                        <img class="c-section-button" src="/img/right.svg" height="15em" alt="Open button">
+                        <h3 class="c-section-title">About</h3>
+                    </div>
+                    <div class="c-section-content">
+                        Developed by <a class="link" href="https://t.me/JortDeveloper">Jort</a>.
+                        <br>
+                        GitHub: <a class="link" href="https://github.com/jort-dev/snapsort">Snapsort</a>.
+                        <br>
+                        <br>
+                        The reason I developed this app is simply because I could not find an existing program which
+                        allows you to manually sort images with hotkeys.
+                        <br>
+                        <br>
+                        However, I have found a similar tool which sorts your files automatically with AI!
+                        <br>
+                        <ul>
+                            <li>
+                                <a class="link" href="https://ai-photo-sorter.vercel.app/">AI photo sorter</a> created
+                                by <a class="link" href="https://github.com/visheratin/ai-photo-sorter">Visheratin</a>.
+                            </li>
+                        </ul>
+                        I was inspired by the command line export method his work has.
+                        <br>
+                        <br>
+                        <br>
+                        If you have more money than you need,
+                        and appreciate this tool, a donation would really excite me!
+                        <ul>
+                            <li>BTC: <code>bc1q8q9pt8c5uz92t7r0ltjmzzft9eulvey5cqghxx</code></li>
+                            <li>Paypal: <form action="https://www.paypal.com/donate" method="post" target="_blank" style="display: inline;">
+                                <input type="hidden" name="hosted_button_id" value="Y7XZETS3RPWW6"/>
+                                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"
+                                       border="0" name="submit" title="PayPal - Donate to this dude"
+                                       alt="Donate with PayPal button"/>
+                                <img alt="" border="0" src="https://www.paypal.com/en_NL/i/scr/pixel.gif" width="1"
+                                     height="1"/>
+                            </form>
+                            </li>
+                            <li>Ko-fi: <a href="https://ko-fi.com/jort_dev" class="link" target="_blank">Donate a 'coffee'</a></li>
+                        </ul>
+                    </div>
+                </section>
+
 
                 <section class="c-section" id="advanced-options-section">
                     <div class="c-section-title-row">
@@ -184,7 +233,8 @@
                         <br>
                         <button class="link-button link-button-inverse" id="example-images-button">Load example images
                         </button>
-                        <button class="link-button link-button-inverse" id="example-images-fast-button">Load example images (fast)
+                        <button class="link-button link-button-inverse" id="example-images-fast-button">Load example
+                            images (fast)
                         </button>
                         <br>
                         Clear all your sorted items:
@@ -209,9 +259,9 @@
         </section>
 
 
-        <div class="footer" id="sort-footer" style="visibility: hidden">
-            <div id="filename-display" style="font-weight: bold">Filename</div>
-            <div id="mapped-folder-display" style="font-style: italic">Unsorted</div>
+        <div class="footer" id="sort-footer">
+            <div class="footer-info-row" id="filename-display" style="font-weight: bold">Filename</div>
+            <div class="footer-info-row" id="mapped-folder-display" style="font-style: italic">Unsorted</div>
             <div class="footer-keybindings" id="footer-keybindings"></div>
         </div>
 
@@ -323,8 +373,8 @@
         });
     }
 
-    async function urlToImageFile(filename, url, fast=false) {
-        if (fast){
+    async function urlToImageFile(filename, url, fast = false) {
+        if (fast) {
             const width = 2400
             const height = 1600
             url = `https://dummyimage.com/${width}x${height}/000000/ffffff&text=${filename}`
@@ -339,7 +389,7 @@
     }
 
 
-    async function getMockUploadEvent(fast=false) {
+    async function getMockUploadEvent(fast = false) {
 
         let urls = {
             i1queen1: `https://images.pexels.com/photos/260024/pexels-photo-260024.jpeg?cs=srgb&dl=pexels-pixabay-260024.jpg&fm=jpg&w=3089&h=2114`,
@@ -357,7 +407,7 @@
         const width = 600
         const height = 400
         let files = []
-        for (let key of Object.keys(urls)){
+        for (let key of Object.keys(urls)) {
             let url = urls[key]
             url = url.replace(/(h=)\d+/, "$1" + height);
             url = url.replace(/(w=)\d+/, "$1" + width);
@@ -510,8 +560,8 @@
         //validate keybindings (program can move to wrong folder with duplicates)
         let keybindings = localStorage.getKeybindings()
         let usedKeys = []
-        for (let keybinding of keybindings){
-            if (usedKeys.includes(keybinding.key)){
+        for (let keybinding of keybindings) {
+            if (usedKeys.includes(keybinding.key)) {
                 logToUser("WARNING: Duplicate keybindings, program may sort incorrectly", 5000)
             }
             usedKeys.push(keybinding.key)
@@ -584,10 +634,10 @@
         clearSortsLink.classList.add("link")
         clearSortsLink.addEventListener("click", clearMappings)
         clearSortsLink.textContent = `Reset sorted items`
-        if (mappingsThatWorkOnThisUpload.length === 0){
+        if (mappingsThatWorkOnThisUpload.length === 0) {
             infoEl.textContent = `You've uploaded ${uploadedFilenames.length} files.`
         }
-        else{
+        else {
             infoEl.textContent = `You've uploaded ${uploadedFilenames.length} files, of which ${mappingsThatWorkOnThisUpload.length} are already sorted. `
             infoEl.appendChild(document.createElement("br"))
             infoEl.appendChild(clearSortsLink)
@@ -625,19 +675,19 @@
             });
     }
 
-    function generateUnusedHotkey(){
+    function generateUnusedHotkey() {
         let keys = [
-            'q', 'w', 'e', 'r', 't', 'a', 's', 'd', 'f', 'z', 'x', 'c', 'v','u', 'i', 'o', 'p', 'j', 'k', 'l', 'n', 'm'
+            'q', 'w', 'e', 'r', 't', 'a', 's', 'd', 'f', 'z', 'x', 'c', 'v', 'u', 'i', 'o', 'p', 'j', 'k', 'l', 'n', 'm'
         ]
-        for (let keybinding of localStorage.getKeybindings()){
-            if (keys.includes(keybinding.key)){
+        for (let keybinding of localStorage.getKeybindings()) {
+            if (keys.includes(keybinding.key)) {
                 let indexToDelete = keys.findIndex((key) => key === keybinding.key);
                 keys.splice(indexToDelete, 1);
                 continue
             }
             break
         }
-        if (keys.length === 0){
+        if (keys.length === 0) {
             console.log("Could not find an unused hotkey.")
             return '!'
         }
@@ -648,7 +698,7 @@
         let keybinding = {
             id: uid(), //unique id, so i dont have to check for duplicate keys / folders
             key: generateUnusedHotkey(),
-            folder: "other",
+            folder: "folder-name", //this value is checked to see if we need to show placeholder
         }
         let keybindings = localStorage.getKeybindings()
         keybindings.push(keybinding)
@@ -731,7 +781,10 @@
         const folderInput = document.createElement('input');
         folderInput.classList.add('flex-table-cell');
         folderInput.classList.add('flex-table-big-cell');
-        folderInput.value = keybinding.folder;
+        if (keybinding.folder !== "folder-name") {
+            folderInput.value = keybinding.folder;
+        }
+        folderInput.placeholder = "folder name"
         folderInput.addEventListener('input', function () {
             keybinding.folder = folderInput.value;
             updateKeybinding(keybinding)
@@ -801,10 +854,11 @@
         pswp.next()
     }
 
-    async function loadExampleImages(fast=false) {
-        console.log(`Loading example images (fast=${fast})`)
+    async function loadExampleImages(fast = false) {
+        logToUser("Example upload loading...")
         let mockEvent = await getMockUploadEvent(fast)
         onUploadListener(mockEvent)
+        logToUser("Example uploaded!")
     }
 
     function getExampleKeybindings() {
@@ -972,6 +1026,9 @@
     }
 
     function setupListeners() {
+        // refresh page title
+        document.getElementById("title").addEventListener("click", () => location.reload())
+
         //gallery opener, default action
         let galleryButton = document.getElementById("open-gallery-button")
         galleryButton.onclick = () => {
@@ -1036,8 +1093,14 @@
         //testing / example values loader buttons
         let exampleKeybindingsButton = document.getElementById("example-keybindings-button")
         exampleKeybindingsButton.addEventListener("click", () => setExampleKeybindings())
+        let exampleKeybindingsButtonExample = document.getElementById("example-upload-link")
+        exampleKeybindingsButtonExample.addEventListener("click", () => setExampleKeybindings())
+
         let exampleImagesButton = document.getElementById("example-images-button")
         exampleImagesButton.addEventListener("click", async () => await loadExampleImages())
+
+        let uploadExampleButton = document.getElementById("upload-example-button")
+        uploadExampleButton.addEventListener("click", async () => await loadExampleImages())
 
         let exampleImagesButtonFast = document.getElementById("example-images-fast-button")
         exampleImagesButtonFast.addEventListener("click", async () => await loadExampleImages(true))
