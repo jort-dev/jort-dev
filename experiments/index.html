@@ -6,53 +6,174 @@
     <meta name="viewport" content="initial-scale=1.0, width=device-width">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/stylesheet.css">
-
     <style>
+        .code {
+            background-color: #f4f4f4;
+            border: 0.1rem solid #ccc;
+            border-radius: 0.4rem;
+        }
+
+        .code-navbar {
+            /*width: 100%;*/
+            /*height: 1rem;*/
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem;
+        }
+
+        .code-navbar-buttons {
+            display: flex;
+        }
+
+        .code-content {
+            font-family: Consolas, monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            padding: 0.8rem;
+            white-space: pre-wrap;
+        }
+
+        .code-content.collapsed {
+            max-height: 4rem;
+            overflow: hidden;
+            background-image: linear-gradient(to bottom, #000000, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            /*-webkit-text-fill-color: transparent;*/
+        }
+
+        .code-button {
+            /*width: 2em;*/
+            /*height: 1em;*/
+            /*border: 1px solid black;*/
+            /*border-radius: 0.4rem;*/
+        }
     </style>
+
 </head>
 <body>
 
 <div class="center-horizontal-parent">
     <h1>Experiment</h1>
-    <input id="file-upload" type="file" name="myfile" multiple/>
-
-</div>
-<div class="footer">
-    <div class="footer-info-row" id="filename-display" style="font-weight: bold">i5elephant2.jpg</div>
-    <div class="footer-info-row" id="mapped-folder-display" style="font-style: italic">elephants</div>
-    <div class="footer-keybindings" id="footer-keybindings">
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">q</div>
-            <div class="footer-keybinding-folder">queens</div>
-        </div>
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">w</div>
-            <div class="footer-keybinding-folder">water-pictures</div>
-        </div>
-        <div class="footer-keybinding footer-keybinding-selected">
-            <div class="footer-keybinding-key">e</div>
-            <div class="footer-keybinding-folder">elephants</div>
-        </div>
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">r</div>
-            <div class="footer-keybinding-folder">rainbows</div>
-        </div>
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">r</div>
-            <div class="footer-keybinding-folder">rainbows</div>
-        </div>
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">r</div>
-            <div class="footer-keybinding-folder">rainbows</div>
-        </div>
-        <div class="footer-keybinding">
-            <div class="footer-keybinding-key">t</div>
-            <div class="footer-keybinding-folder">other</div>
+    <div id="content">
+        <div class="code">
+            <div class="code-navbar">
+                <span>script.sh</span>
+                <div class="code-navbar-buttons">
+                    <button class="code-button">Copy</button>
+                    <button class="code-button">Download</button>
+                    <button class="code-button">Expand</button>
+                </div>
+            </div>
+            <pre class="code-content">
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+line 7
+        </pre>
         </div>
     </div>
+
 </div>
 
+
 <script>
+    function getExportSectionContent(commands, filename, step2 = "sort") {
+        //could do: buttons read content from html element instead
+
+        let container = document.createElement("div")
+
+        // instructions
+        let instruction = `Open terminal in folder with uploaded files, and<br>`
+        instruction += `paste below commands in to ${step2}:<br><br>`
+        let instructionDiv = document.createElement("div")
+        instructionDiv.innerHTML = instruction
+
+        // code
+        let codeDiv = document.createElement("div")
+        codeDiv.classList.add("code")
+
+        //content
+        let codeContentPre = document.createElement("pre")
+        codeContentPre.classList.add("code-content")
+        let content = commands
+        codeContentPre.innerHTML += content
+        codeContentPre.classList.add("collapsed")
+
+
+        // navbar
+        let navBar = document.createElement("div")
+        navBar.classList.add("code-navbar")
+
+        //navbar filename
+        let filenameSpan = document.createElement("span")
+        filenameSpan.textContent = filename
+
+        //navbar buttons
+        let navBarButtons = document.createElement("div")
+        navBarButtons.classList.add("code-navbar-buttons")
+
+
+        //copy button
+        let copyButton = document.createElement("button")
+        copyButton.classList.add("code-button")
+        copyButton.textContent = "Copy"
+        copyButton.addEventListener("click", event => {
+            let msg = "ERROR"
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(content);
+                msg = `Copied!`
+            }
+            else {
+                logToUser("Copy only works over HTTPS")
+            }
+            copyButton.textContent = msg;
+            setTimeout(function () {
+                copyButton.textContent = "Copy"
+            }, 2000);
+        })
+
+        //download button
+        let downloadButton = document.createElement("button")
+        downloadButton.classList.add("code-button")
+        downloadButton.textContent = "Download"
+        downloadButton.addEventListener("click", event => {
+            downloadTextAsFile(filename, content)
+        })
+
+        //content collapse
+        let collapseButton = document.createElement("button")
+        collapseButton.classList.add("collapse-button")
+        collapseButton.textContent = "Collapse"
+        collapseButton.addEventListener("click", event => {
+            codeContentPre.classList.toggle("collapsed")
+        })
+
+        container.appendChild(instructionDiv)
+        container.appendChild(codeDiv)
+        codeDiv.appendChild(navBar)
+        codeDiv.appendChild(codeContentPre)
+        navBar.appendChild(filenameSpan)
+        navBar.appendChild(navBarButtons)
+        navBarButtons.appendChild(copyButton)
+        navBarButtons.appendChild(downloadButton)
+        navBarButtons.appendChild(collapseButton)
+
+        return container
+    }
+
+    let content = ``
+    for (let i = 0; i < 300; i++) {
+        content += `Line ${i}\n`
+    }
+
+    let contentDiv = document.getElementById("content")
+    let contentChild = getExportSectionContent(content, "apply.sh", "sort")
+    contentDiv.appendChild(contentChild)
 
 </script>
 
