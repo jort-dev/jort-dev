@@ -1,3 +1,6 @@
 [submodule "snapsort"]
 	path = snapsort
 	url = git@github.com:jort-dev/snapsort.git
+[submodule "music_marker"]
+	path = music_marker
+	url = https://github.com/jort-dev/music_marker
