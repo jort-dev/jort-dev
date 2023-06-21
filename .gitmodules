@@ -1,0 +1,3 @@
+[submodule "snapsort"]
+	path = snapsort
+	url = git@github.com:jort-dev/snapsort.git
