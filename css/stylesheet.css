@@ -1,12 +1,9 @@
+/*Welcome to this mess of a CSS file.*/
 :root {
-
     --theme-color: #388e3c;
-    /*--theme-color: #0F9D58;*/
     --alt-theme-color: #1b5e20;
     --background-color: white;
-
     --theme-color-green: #388e3c;
-    /*--theme-color-green: #0F9D58;*/
     --theme-color-yellow: #F4B400;
     --theme-color-red: #DB4437;
     --theme-color-blue: #4285F4;
@@ -55,6 +52,7 @@ body, html {
     min-width: 90vw;
     /*also setting this width somehow prevents the unreachable left side problem induced by indented class*/
     width: 90vw;
+    /*border: 2px solid black;*/
 }
 
 @media screen and (min-width: 50rem) {
@@ -329,16 +327,17 @@ body, html {
     flex-direction: column;
 }
 
-.title-big{
+.title-big {
     font-size: 1.8rem;
     font-weight: bold;
 }
-.title-medium{
+
+.title-medium {
     font-size: 1.4rem;
     font-weight: bold;
 }
 
-.title-small{
+.title-small {
     font-size: 1rem;
     font-weight: bold;
 }
@@ -607,4 +606,72 @@ pre {
         transform: translateY(0); /* End position (return to original position) */
     }
 }
+
+.showcase {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(15rem, 1fr));
+    gap: 1rem;
+}
+
+.showcase-content {
+    /*border: 1px solid black;*/
+    padding: 0.5rem;
+    /*height: 4rem;*/
+}
+
+@media screen and (min-width: 50rem) {
+    .showcase {
+        grid-template-columns: repeat(2, minmax(15rem, 1fr));
+    }
+
+    .showcase-content {
+        padding: 0.5rem;
+        height: 9rem;
+        /*only define height on desktop view,
+         because items dont need to be the same height on mobile as they are below each other*/
+    }
+}
+
+.showcase-box {
+    display: flex;
+    flex-direction: column;
+    /*border: 0.2rem solid lightgrey;*/
+    /*border-radius: 1rem;*/
+
+    border: double 0.3em transparent;
+    border-radius: 30px;
+    background-image: linear-gradient(white, white),
+    linear-gradient(140deg, var(--theme-color-green), lightgrey);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+
+}
+
+.showcase-header {
+    /*border: 1px solid black;*/
+    /*padding-left: 0.3em;*/
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    /*border-bottom: 0.1rem solid var(--theme-color-green);*/
+    border-bottom: 0.2rem solid transparent;
+    border-image: linear-gradient(15deg, var(--theme-color-green), lightgrey);
+    border-image-slice: 1;
+    text-align: center;
+}
+
+.showcase-footer {
+    display: flex;
+    border-top: 0.1rem solid lightgrey;
+    /*border: 1px solid black;*/
+    justify-content: space-between;
+}
+
+.showcase-footer-item {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+
+
+
 
