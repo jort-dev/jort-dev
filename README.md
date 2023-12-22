@@ -118,6 +118,40 @@ The better solution against attacks is to only allow public and private key conn
 * project overview like https://flathub.org/
 
 
+# Troubleshooting
+## Can SSH in server, but server itself cannot access internet
+### Symptoms
+* Can SSH in server locally and remotely
+* dhcpcd is running (systemctl list-unit-files)
+* Can't ping google.com or install packages etc
+* Can ping 8.8.8.8
+* /etc/resolv.conf is empty or only contains comments
+* Hostnames are correctly configures in /etc/hosts and /etc/hostname (they are the same)
+
+### Solution
+Because 8.8.8.8 is pingable, internet drivers are working.
+When pinging google.com etc, a DNS server is used to determine the IP behind google.com.
+Google.com cannot be accessed, so there must be something wrong with the DNS servers.
+
+ChatGTP solution:  
+Add `nameserver 8.8.8.8` to `/etc/resolv.conf`, and then run `sudo systemctl restart systemd-resolved`.
+
+Old Solution:  
+openresolv automatically copies an IP from /etc/dhcpcd.conf to /etc/resolv.conf.
+/etc/resolv.conf was empty, so this did not happen.
+For me, openresolv was somehow uninstalled, probably during a system update.
+To fix: manually populate openresolv.
+In /etc/dhcpcd.conf, the static domain_name_server=192.168.1.1
+So in /etc/openresolv. I added: nameserver 192.168.1.1
+This gets reset when dhcpcd is restarted, so I installed the openresolv package, which populates the file automatically.
+
+## Nginx shows default page
+This happens when Nginx is updated. To fix, do a force pull:
+```shell
+git fetch --all
+git reset --hard origin/master
+```
+
 
 
 
